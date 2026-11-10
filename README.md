@@ -212,6 +212,31 @@ On simple products the hybrid answers `0.9927*Nn*mu` at 5% noise and `0.9751*Nn*
 | 4 | 27 | 69 | 149 |
 | all | 79 | 46 (total 34 CPU-hours) | 218 (total 181 CPU-hours) |
 
+### Run time against number of rows (Tests 15 and 16)
+
+Test 16 reruns Test 15 on smaller grids: the same 79 laws, settings, noise levels and
+seeds, with about 100 or about 30 rows per law (fewer levels per input). Its law counts
+will be added here when it finishes. Times are from finished runs, with every method
+running 18 jobs in parallel on the laptop above, so both methods are slower than on an
+idle machine. In the Test 16 pilot on an idle machine, PySR took 35–45 s and the hybrid
+3–13 s per run.
+
+| rows per law | laws timed | Hybrid, median seconds per run | PySR, median seconds per run | PySR slower by | total CPU-hours, Hybrid / PySR |
+|---|---|---|---|---|---|
+| about 1000 (Test 15) | 79 of 79 | 46 | 218 | 4.8× | 34 / 181 |
+| about 100 (Test 16) | 79 of 79 | 17 | 79 | 4.6× | 13 / 55 |
+| about 30 (Test 16, partial) | Hybrid 63, PySR 53 of 79 | 18 | 59 | 3.3× | not final |
+
+*The about-30 row is partial, as of 10 November 2026, 23:09.*
+
+- **PySR is slower at every size.** The gap shrinks with fewer rows: about 5× at 1000
+  and 100 rows, about 3× at 30.
+- **The hybrid's time barely changes between 100 and 30 rows** (17 against 18 s). Most of
+  its time goes on trying combinations of terms and on repeated cross-validation (5 folds
+  × 5 repeats), not on the rows themselves.
+- **PySR gets faster as rows drop.** It runs a fixed number of search rounds and checks
+  every candidate formula on every row, so fewer rows means less work per round.
+
 ### Tests 13–14: BACON's own five laws (the hybrid was designed after seeing these)
 
 Exact-law runs. "given" is the authors' own small design and "dense" a larger grid. Same
@@ -288,7 +313,8 @@ data for every method, run for run. BACON is the original at its code defaults.
   long formulas that fit the few points. Neither finds the ideal gas law, because
   `T + 273` and its first-order twin fit equally well over the narrow range of `T`.
 - **Cost: the hybrid needs about a fifth of PySR's CPU time** (34 against 181 CPU-hours
-  for Test 15).
+  for Test 15, 13 against 55 at about 100 rows). The gap narrows to about a third at 30
+  rows (partial Test 16 timings, above).
 
 ## Ideas for testing the hybrid against PySR
 
