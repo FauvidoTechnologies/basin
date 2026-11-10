@@ -1,0 +1,6 @@
+# Versions used for every result in README.md (Python 3.10.12), from bacon-vs-pysindy's requirements.lock
+numpy==2.2.6
+scipy==1.15.3
+sympy==1.14.0
+pysindy==2.1.0
+scikit-learn==1.7.2
