@@ -212,26 +212,168 @@ On simple products the hybrid answers `0.9927*Nn*mu` at 5% noise and `0.9751*Nn*
 | 4 | 27 | 69 | 149 |
 | all | 79 | 46 (total 34 CPU-hours) | 218 (total 181 CPU-hours) |
 
+### Test 16: Test 15 with fewer rows (about 100 and about 30)
+
+- **Data:** the same 79 laws and the same kind of grid, with fewer levels per input.
+  - About 100 rows: 1 input 100 levels, 2 inputs 10, 3 inputs 5, 4 inputs 3 (81 rows).
+  - About 30 rows: 30, 5, 3 and 2 levels (16 rows for 4 inputs).
+- **Everything else as in Test 15:** noise levels, seeds, settings and scoring. The rules
+  were written down before running, and no method was changed.
+
+**Laws (of 79) whose exact law the method finds in more than half its runs** (fixed
+coefficient check):
+
+| method | rows per law | no noise | 1% noise | 5% noise | 10% noise |
+|---|---|---|---|---|---|
+| BACON (original) | about 1000 (Test 15) | 40 | 28 | 19 | 14 |
+|  | about 100 | 40 | 28 | 17 | 17 |
+|  | about 30 | 29 | 20 | 15 | 10 |
+| BACON-robust | about 1000 (Test 15) | 44 | 41 | 36 | 14 |
+|  | about 100 | 33 | 27 | 14 | 0 |
+|  | about 30 | 14 | 11 | 0 | 0 |
+| PySINDy | about 1000 (Test 15) | 35 | 0 | 0 | 0 |
+|  | about 100 | 34 | 1 | 0 | 0 |
+|  | about 30 | 30 | 6 | 0 | 0 |
+| Hybrid | about 1000 (Test 15) | 43 | 43 | 42 | 41 |
+|  | about 100 | 43 | 43 | 41 | 37 |
+|  | about 30 | 43 | 29 | 26 | 23 |
+| PySR | about 1000 (Test 15) | 42 | 50 | 50 | 49 |
+|  | about 100 | 24 | 4 | 2 | 1 |
+|  | about 30 | 28 | 0 | 0 | 0 |
+
+**Hybrid against PySR, head to head.** Each cell: laws where the hybrid finds the exact
+law in more runs than PySR, then laws where PySR does, then the two-sided sign test.
+
+| rows per law | no noise | 1% noise | 5% noise | 10% noise |
+|---|---|---|---|---|
+| about 1000 (Test 15) | 8 to 7, p = 1 | 6 to 21, p = 0.0059 | 8 to 21, p = 0.024 | 6 to 15, p = 0.078 |
+| about 100 | 20 to 1, p = 2.1e-05 | 43 to 15, p = 0.00031 | 42 to 11, p = 2.2e-05 | 38 to 10, p = 6.2e-05 |
+| about 30 | 19 to 4, p = 0.0026 | 43 to 2, p = 5.9e-11 | 41 to 1, p = 2e-11 | 36 to 0, p = 2.9e-11 |
+
+With the original coefficient check, the 1% verdict at about 100 rows is level (36 to 21,
+p = 0.063). Every other cell above is significant either way.
+
+**The hybrid by number of inputs** (laws found in more than half the runs; no noise, 1%,
+5%, 10%):
+
+| inputs (laws) | Test 15 | about 100 rows | about 30 rows |
+|---|---|---|---|
+| 1 (1) | 1000 levels: 0, 0, 0, 0 | 100 levels: 0, 0, 0, 0 | 30 levels: 0, 0, 0, 0 |
+| 2 (15) | 32 levels: 13, 13, 12, 12 | 10 levels: 13, 13, 12, 11 | 5 levels: 13, 12, 11, 11 |
+| 3 (36) | 10 levels: 17, 17, 17, 16 | 5 levels: 17, 17, 17, 15 | 3 levels: 17, 14, 13, 12 |
+| 4 (27) | 6 levels: 13, 13, 13, 13 | 3 levels: 13, 13, 12, 11 | 2 levels: 13, 3, 2, 0 |
+
+**Median prediction error** (normalized RMS error at 200 random points, all runs; both
+methods return a formula in every run). Hybrid / PySR:
+
+| rows per law | 1% noise | 5% noise | 10% noise |
+|---|---|---|---|
+| about 1000 (Test 15) | 0.09% / 0.06% | 0.77% / 0.29% | 2.6% / 0.60% |
+| about 100 | 0.20% / 0.70% | 1.3% / 3.4% | 3.4% / 6.7% |
+| about 30 | 0.76% / 2.0% | 3.4% / 8.4% | 6.7% / 15% |
+
+- **PySR, with its default choice, collapses with noise and few rows; the hybrid does
+  not** (with `"score"` it does not collapse either: Test 17). At about 100 rows the
+  hybrid is almost unchanged from Test 15. PySR finds 4, 2 and 1 laws with noise, and none
+  at about 30 rows.
+- **Why PySR collapses** (checked on one run, I.12.1 `F = mu*Nn`, about 100 rows, 1%
+  noise):
+  - PySR keeps `Nn*mu` among its formulas, with the highest score of any.
+  - Its default choice (`model_selection="best"`) only considers formulas whose loss is
+    within 1.5 times the lowest. With 100 rows, long formulas full of `cos` and `exp` fit
+    the noise down to a loss of 0.0057, while `Nn*mu` has 0.0135, the noise level.
+  - So it answers `Nn*(-0.002042*Nn*mu*(cos(Nn*exp(mu)) - cos(Nn*mu*cos(mu))) + mu)`.
+  - With Test 15's 1024 rows, long formulas reach only 0.0093 against 0.0098, so
+    `Nn*mu` is chosen.
+  - Test 17 (below) reran these PySR runs with its `"score"` choice.
+- **The hybrid's weak spot is 2 levels per input with noise:** the 4-input laws at about
+  30 rows (16 rows) drop from 13 to 3, 2 and 0. Two points cannot tell a straight line
+  from a curve, so many wrong formulas fit the data equally well. It also loses the other
+  algebraic laws (kind B) with noise at about 30 rows: 6, 0 and 0, against 8, 7 and 6 in
+  Test 15.
+- Full analysis, including BACON and PySINDy: bacon-vs-pysindy README, Test 16.
+
+### Test 17: Test 16 again, PySR choosing with `model_selection="score"`
+
+- **Setup:** Test 16's data, seeds and PySR settings, with one change. PySR picks the
+  formula with the highest score among the ones it kept (`"score"`), with no loss
+  cut-off. Its default `"best"` only looks at formulas within 1.5 times the lowest loss.
+  The hybrid was not rerun: its Test 16 answers are compared run for run.
+- **Check:** PySR's search repeated exactly. In all 4,898 runs the formula `"best"`
+  would pick is Test 16's answer, so only the choice changed.
+- Rules were written down before running (bacon-vs-pysindy README, Test 17). PySR got
+  this second setting after its first failed; the hybrid got no second setting.
+
+**Laws found in more than half the runs** (of 79; fixed coefficient check):
+
+| method | rows per law | no noise | 1% noise | 5% noise | 10% noise |
+|---|---|---|---|---|---|
+| Hybrid | about 100 | 43 | 43 | 41 | 37 |
+| PySR, `"best"` (Test 16) | about 100 | 24 | 4 | 2 | 1 |
+| PySR, `"score"` | about 100 | 50 | 45 | 38 | 34 |
+| Hybrid | about 30 | 43 | 29 | 26 | 23 |
+| PySR, `"best"` (Test 16) | about 30 | 28 | 0 | 0 | 0 |
+| PySR, `"score"` | about 30 | 45 | 46 | 37 | 29 |
+
+**Hybrid against PySR with `"score"`, head to head.** Each cell: laws where the hybrid
+finds the exact law in more runs, then laws where PySR does, then the two-sided sign test.
+
+| rows per law | no noise | 1% noise | 5% noise | 10% noise |
+|---|---|---|---|---|
+| about 100 | 3 to 10, p = 0.092 | 10 to 14, p = 0.54 | 14 to 15, p = 1 | 14 to 15, p = 1 |
+| about 30 | 8 to 10, p = 0.81 | 10 to 41, p = 1.5e-05 | 10 to 41, p = 1.5e-05 | 9 to 36, p = 6.6e-05 |
+
+**By kind of law** (A one product of powers, B other algebraic, C with `sin`, `cos`, `exp`
+or `arcsin`), laws found in more than half the runs, hybrid / PySR with `"score"`:
+
+| kind | rows per law | no noise | 1% noise | 5% noise | 10% noise |
+|---|---|---|---|---|---|
+| A (35) | about 100 | 35 / 34 | 35 / 32 | 35 / 28 | 35 / 25 |
+| A (35) | about 30 | 35 / 32 | 23 / 31 | 26 / 26 | 23 / 23 |
+| B (24) | about 100 | 8 / 8 | 8 / 7 | 6 / 6 | 2 / 5 |
+| B (24) | about 30 | 8 / 5 | 6 / 7 | 0 / 5 | 0 / 2 |
+| C (20) | about 100 | 0 / 8 | 0 / 6 | 0 / 4 | 0 / 4 |
+| C (20) | about 30 | 0 / 8 | 0 / 8 | 0 / 6 | 0 / 4 |
+
+**Median prediction error** at 200 random points, hybrid / PySR with `"score"` (PySR with
+`"best"` in brackets):
+
+| rows per law | 1% noise | 5% noise | 10% noise |
+|---|---|---|---|
+| about 100 | 0.20% / 0.18% (0.70%) | 1.3% / 1.2% (3.4%) | 3.4% / 2.6% (6.7%) |
+| about 30 | 0.76% / 0.46% (2.0%) | 3.4% / 2.8% (8.4%) | 6.7% / 5.7% (15%) |
+
+- **Test 16's win over PySR came from PySR's default choice.** With `"score"`, PySR finds
+  about as many laws as the hybrid at about 100 rows, and more at about 30 rows with
+  noise.
+- **At about 100 rows the two are level, but on different laws.** The hybrid keeps every
+  product-of-powers law (A) at every noise level, where PySR loses up to 10. PySR finds
+  4 to 8 trig and exponential laws (C), which the hybrid cannot write.
+- **At about 30 rows PySR is better with noise.** Most of the difference is the 4-input
+  laws, which then have 2 levels per input: the hybrid finds 13, 3, 2 and 0 of 27,
+  PySR 13, 10, 8 and 7. This is the hybrid's weak spot from Test 16.
+- **PySR's answers now predict slightly better than the hybrid's** at every noise level
+  and both sizes.
+- **`"score"` hardly costs PySR anything.** It loses one law that `"best"` found (I.30.5
+  at about 100 rows and 1% noise: it answers `lambd/(d*n)`, the small-angle form of
+  `asin(lambd/(n*d))`), and on clean data it finds 26 and 17 more laws.
+- Full analysis: bacon-vs-pysindy README, Test 17.
+
 ### Run time against number of rows (Tests 15 and 16)
 
-Test 16 reruns Test 15 on smaller grids: the same 79 laws, settings, noise levels and
-seeds, with about 100 or about 30 rows per law (fewer levels per input). Its law counts
-will be added here when it finishes. Times are from finished runs, with every method
-running 18 jobs in parallel on the laptop above, so both methods are slower than on an
-idle machine. In the Test 16 pilot on an idle machine, PySR took 35–45 s and the hybrid
-3–13 s per run.
+Every method ran 18 jobs in parallel on the laptop above, so both methods are slower than
+on an idle machine. In the Test 16 pilot on an idle machine, PySR took 35–45 s and the
+hybrid 3–13 s per run.
 
-| rows per law | laws timed | Hybrid, median seconds per run | PySR, median seconds per run | PySR slower by | total CPU-hours, Hybrid / PySR |
-|---|---|---|---|---|---|
-| about 1000 (Test 15) | 79 of 79 | 46 | 218 | 4.8× | 34 / 181 |
-| about 100 (Test 16) | 79 of 79 | 17 | 79 | 4.6× | 13 / 55 |
-| about 30 (Test 16, partial) | Hybrid 63, PySR 53 of 79 | 18 | 59 | 3.3× | not final |
-
-*The about-30 row is partial, as of 10 November 2026, 23:09.*
+| rows per law | Hybrid, median seconds per run | PySR, median seconds per run | PySR slower by | total CPU-hours, Hybrid / PySR |
+|---|---|---|---|---|
+| about 1000 (Test 15) | 46 | 218 | 4.8× | 34 / 181 |
+| about 100 (Test 16) | 17 | 79 | 4.6× | 13 / 55 |
+| about 30 (Test 16) | 16 | 61 | 3.8× | 12 / 43 |
 
 - **PySR is slower at every size.** The gap shrinks with fewer rows: about 5× at 1000
-  and 100 rows, about 3× at 30.
-- **The hybrid's time barely changes between 100 and 30 rows** (17 against 18 s). Most of
+  and 100 rows, about 4× at 30.
+- **The hybrid's time barely changes between 100 and 30 rows** (17 against 16 s). Most of
   its time goes on trying combinations of terms and on repeated cross-validation (5 folds
   × 5 repeats), not on the rows themselves.
 - **PySR gets faster as rows drop.** It runs a fixed number of search rounds and checks
@@ -312,9 +454,19 @@ data for every method, run for run. BACON is the original at its code defaults.
 - **Small designs (5–27 rows, Tests 13–14): the hybrid holds up better.** PySR builds
   long formulas that fit the few points. Neither finds the ideal gas law, because
   `T + 273` and its first-order twin fit equally well over the narrow range of `T`.
+- **Fewer rows on the 79 Feynman laws (Tests 16–17): the result depends on how PySR
+  chooses its formula.**
+  - With PySR's default (`"best"`, Test 16) the hybrid beats it at every noise level, at
+    about 100 and about 30 rows (every p ≤ 0.003). PySR finds 4, 2 and 1 laws with noise
+    at about 100 rows, and none at about 30.
+  - With `"score"` (Test 17) the two are level at about 100 rows. At about 30 rows PySR
+    beats the hybrid with noise (41 laws to 10, 41 to 10, 36 to 9), mostly on the
+    4-input laws, which then have 2 levels per input.
+  - So Test 16 does not confirm Tests 13–14's "the hybrid holds up better with few
+    rows" against PySR at its best. Tests 13–14 used PySR's default choice too.
 - **Cost: the hybrid needs about a fifth of PySR's CPU time** (34 against 181 CPU-hours
-  for Test 15, 13 against 55 at about 100 rows). The gap narrows to about a third at 30
-  rows (partial Test 16 timings, above).
+  for Test 15, 13 against 55 at about 100 rows), and about a quarter to a third at about
+  30 rows (12 against 43).
 
 ## Ideas for testing the hybrid against PySR
 
@@ -344,9 +496,9 @@ parallel jobs, about 1 hour per 1,000 hybrid runs.
    random, proportional or constant noise.
 4. **Higher noise: 15%, 20%, 30%.** This tests the bias above. The prediction is that
    the hybrid starts missing laws it has the right terms for, at around 15–20%.
-5. **Fewer rows: 20, 50, 100 instead of about 1000.** Real experiments are often this
-   small. Tests 13–14 suggest PySR overfits small tables and the hybrid does not; this
-   would test that on laws neither was designed on.
+5. **Fewer rows. Done as Test 16** (about 100 and about 30 rows, above). PySR with its
+   default choice collapsed with noise (not with `"score"`, Test 17). The hybrid held at
+   about 100 rows and lost the 2-level laws at about 30.
 6. **Constants that are not 1.** Many Feynman laws can be written with no fitted number,
    which PySR does exactly. Two ways to remove that edge:
    - Multiply each law by a random constant.
@@ -365,8 +517,10 @@ parallel jobs, about 1 hour per 1,000 hybrid runs.
 9. **PySR given more:**
    - 10 times the iterations: does more search find more laws, or add more extra
      terms?
-   - Its "accuracy" model selection instead of "best", which would show whether the
-     clean-data extra terms come from model selection.
+   - Its "score" model selection instead of "best". **Done as Test 17** on Test 16's
+     data: PySR's collapse goes away, and on clean data it finds 26 and 17 more laws.
+     Not yet run on Test 15's data (about 1000 rows), where the clean-data extra terms
+     were first seen.
    - Only the hybrid's operators on the algebraic laws.
 
    This checks that PySR is not handicapped by its default settings.
@@ -387,9 +541,11 @@ parallel jobs, about 1 hour per 1,000 hybrid runs.
 
 **Suggested order:**
 1. Idea 1: it is free.
-2. Ideas 2 + 3 as the next test, run on fresh noise seeds. It would also repeat the
+2. Idea 9's model-selection check on Test 16's data: done (Test 17). Comparisons with
+   PySR from here on should use `"score"`, or report both choices.
+3. Ideas 2 + 3 as the next test, run on fresh noise seeds. It would also repeat the
    after-the-run "level on algebraic laws" result as a proper test.
-3. Ideas 4 + 10, then idea 11.
+4. Ideas 4 + 10, then idea 11.
 
 ## Files
 
@@ -400,6 +556,10 @@ parallel jobs, about 1 hour per 1,000 hybrid runs.
 | `requirements.txt` | package versions used for every result above |
 | `benchmarks/test15_feynman.csv` | Test 15, every law × method × noise level: runs, exact (fixed and original check), right terms, median prediction error, median seconds |
 | `benchmarks/test15_hybrid_pysr_answers.csv` | every hybrid and PySR answer in Test 15 (4 significant digits), with its verdict |
+| `benchmarks/test16_feynman.csv` | Test 16, every grid × law × method × noise level: levels per input, rows, runs, exact (fixed and original check), right terms, median prediction error, median seconds |
+| `benchmarks/test16_hybrid_pysr_answers.csv` | every hybrid and PySR answer in Test 16 (4 significant digits), with its verdict |
+| `benchmarks/test17_feynman.csv` | Test 17, every grid × law × noise level for the hybrid, PySR with "best" (Test 16) and PySR with "score": runs, exact (fixed and original check), right terms, median prediction error |
+| `benchmarks/test17_pysr_score_answers.csv` | every PySR answer with "score" in Test 17 (4 significant digits), with its verdict |
 | `benchmarks/tests12_14_bacon_laws.csv` | Tests 12–14, BACON's five laws, every method |
 
 ## Per-law results, Test 15: hybrid / PySR
