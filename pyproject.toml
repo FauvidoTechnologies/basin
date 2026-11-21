@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "basin-sr"
-version = "0.1.0"
+version = "0.1.1"
 description = "Law finder for tables of measurements: BACON proposes terms, sparse regression and cross-validation decide"
 authors = ["pUrGe12 <achintya.jai@owasp.org>"]
 license = "MIT"
