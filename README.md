@@ -1,131 +1,153 @@
-# basin: BACON proposes terms, regression decides
+# basin
+
+**Find the formula behind a table of measurements.** Give basin some inputs
+`x₁ … xₙ` and one measured output `y`, and it returns a readable law
+`y = N(x)/D(x)` as a sympy expression. For example, from noisy mixing data it recovers
+Black's law `(M1·T1 + M2·T2)/(M1 + M2)`.
+
+It belongs to the same family as [PySR](https://github.com/MilesCranmer/PySR) and
+[PySINDy](https://github.com/dynamicslab/pysindy), and borrows from both sides:
+
+- **like BACON** (Langley's discovery system), it proposes terms from the data itself,
+  including fractional powers such as `x^(3/2)`;
+- **like SINDy**, it fits sparse sums of those terms, as numerator and denominator;
+- it **picks between candidate laws by cross-validation**, preferring the simplest law
+  whose held-out error is within one standard error of the best.
+
+On the AI Feynman benchmark it is level with PySR on algebraic laws, at about a fifth of
+the CPU time. It cannot write `sin`, `cos`, `exp` or `log` ([benchmarks](#benchmarks)).
+
+## Install
 
 ```bash
-pip install basin-sr
+pip install basin-sr          # imported as `basin`; Python 3.10+
 ```
+
+## Quick start
 
 ```python
+from itertools import product
+
+import numpy as np
 import basin
-law = basin.discover(X, y, ["M1", "T1", "M2", "T2"])   # a sympy expression
+
+# Black's law of mixtures from a 3-level factorial experiment (81 rows) with 1% noise
+X = np.array(list(product([1, 2, 3], [10, 50, 90], [1, 2, 3], [20, 60, 100])), float)
+M1, T1, M2, T2 = X.T
+y = (M1 * T1 + M2 * T2) / (M1 + M2)
+y = y + np.random.default_rng(0).normal(0, 0.01 * np.abs(y))
+
+law = basin.discover(X, y, ["M1", "T1", "M2", "T2"])
+print(law.evalf(4))    # (1.004*M1*T1 + 1.002*M2*T2)/(1.0*M1 + 1.003*M2), about 10 s
 ```
 
-In the text below, "the hybrid" means this method.
+`example.py` in this repo runs the same thing.
 
-A law finder for tables of measurements: given inputs `x₁ … xₙ` and one measured output
-`y`, it returns a formula `y = N(x)/D(x)`. It combines ideas from BACON (Langley's
-discovery system, as rebuilt by Miller & Banerjee 2025) with SINDy-style sparse
-regression (PySINDy), and decides between candidate laws by cross-validation.
-
-It was built and benchmarked in
-[bacon-vs-pysindy](https://github.com/pUrGe12/bacon-vs-pysindy) (Tests 13–15). This
-directory holds a standalone copy of it, so it can be developed and tested against PySR
-on its own.
-
-## Where this copy came from
-
-- `hybrid.py` is copied from `bacon-vs-pysindy/hybrid.py` at commit `a53d1ce`. That file
-  (SHA-256 `b418a97a…`) is the version recorded in all 79 hybrid run records of Test 15,
-  unchanged since it was frozen for Test 13.
-- **One change:** the original imported a list of 25 STLSQ thresholds
-  (`np.logspace(-3, 3, 25)`) from `sindy_runner.py`. The list is now written into
-  `hybrid.py`, so the file stands alone. Nothing else differs (`diff` shows only those
-  lines).
-- **Checked:** the copy and the original were run on the same data for four Test 15
-  setups, and gave identical formulas, equal to the saved Test 15 answers:
-  - I.12.1 at 10% noise: `0.9751*Nn*mu`
-  - I.18.4 at 5% noise: `(0.9975*m1*r1 + 0.9982*m2*r2)/(1.0*m1 + 1.009*m2)`
-  - I.47.23 with no noise: `1.0*gamma**0.5*pr**0.5/rho**0.5`
-  - II.11.28 at 1% noise: `(0.6733*alpha*n + 1.0)/(-0.3292*alpha*n + 1.0)`
-- Any change from here on should be a named switch, with the benchmark version as the
-  default, so the results below stay reproducible.
-- **Since then:** two such switches (`POWER_DENOMINATORS`, `POWER_FREE`, see the
-  settings table), and the file moved to `basin/core.py` for the package. Black's law in
-  `example.py` gives the same formula as the original.
-
-## Use
-
-```bash
-pip install basin-sr                 # the library (imported as `basin`)
-pip install -r requirements.txt      # or: the exact versions used for every result below (Python 3.10)
-python example.py                    # Black's law from 81 noisy rows, about 10 s
-```
+## API
 
 ```python
-import basin
+law = basin.discover(X, y, symbols=None, details=False)
+```
 
-# X: one row per measurement, one column per input; y: the measured output
-law = basin.discover(X, y, ["M1", "T1", "M2", "T2"])  # names, sympy Symbols, or None (x0, x1, ...)
-law, info = basin.discover(X, y, names, details=True)  # also: proposed powers, CV error
+- `X`: array of shape `(rows, inputs)`; `y`: the measured output, shape `(rows,)`.
+- `symbols`: input names (strings or sympy symbols; strings become positive symbols).
+  The default is `x0, x1, …`.
+- Returns a sympy expression, or `None` if no candidate law could be fitted.
+- `details=True` also returns a dict: the proposed powers and their estimates, the
+  number of terms and candidate laws, and the chosen law's cross-validated error.
 
-# the side-run switches (defaults = the benchmark version), changed for a block only:
-with basin.settings(POWER_FREE=True):
+```python
+with basin.settings(POWER_FREE=True):       # change switches for one block only
     law = basin.discover(X, y, names)
 ```
 
-`basin.core` is the method itself (formerly `hybrid.py`). The top-level `hybrid.py` is a
-shim that makes `import hybrid` return `basin.core`, so the runners in `allen/` and
-`neuromorpho/` work as before.
-
-### Releasing (maintainers)
-
-`make new-release` builds with poetry, runs `twine check`, and uploads with the token
-`pypy_api_token` from `./.env` (git-ignored; see `.env.example`). Twine gets an empty
-config file and an explicit upload URL, so `~/.pypirc` and other projects' credentials
-are never used. `make test-release` uploads to TestPyPI with `testpypi_api_token`. Raise
-the version in both `basin/version.py` and `pyproject.toml` (the build checks they match).
+`basin.settings` takes any of the settings in the table below and restores the old
+values on exit. The switches are module globals, so this is not thread-safe.
+`basin.propose_powers` and `basin.term_list` expose steps 1 and 2 on their own.
 
 ## How it works
 
-Given the table (every step uses all rows):
-
-1. **Propose powers, BACON's way.** For each input `x_j`, group the rows where every
-   other input has the same value (BACON's "slices" of a factorial experiment) and fit
-   `log|y| = (one intercept per slice) + p·log x_j` on all slices at once. Every simple
-   fraction (denominator 1, 2 or 3, |p| ≤ 3, not 0) within 3 standard errors of `p`
-   (at least 0.03; at most the 2 nearest) becomes a candidate term `x_j^p`. So does the
-   product of each input's nearest fraction (BACON's invariant, e.g. `T·D²`). Nothing is
-   accepted or rejected here. If the rows have no slices, one fit of `log|y|` on all
-   `log x_j` is used instead.
-2. **Term list:** `1`, every input, every product of two inputs (squares included), plus
-   the proposed terms.
-3. **Fractions as a linear problem (as in SINDy-PI):** `y = N/D` with `N` and `D` sparse
-   sums of terms, fitted as `y·D = N` with one `D` coefficient fixed to 1. Candidate laws:
-   every law with up to 4 terms in total (screened by a quick fit, best 30 per size),
-   plus larger ones (up to 5 free coefficients) from PySINDy's STLSQ and from forward
+1. **Propose powers.** For each input, basin takes the rows where every other input is
+   held fixed (BACON's "slices" of a factorial experiment) and fits a power law
+   `log|y| ~ p·log x` across all slices at once. Simple fractions near `p` become
+   candidate terms (denominator ≤ 3, |p| ≤ 3, within 3 standard errors), and so does
+   their product. Without slices, as in a time series, it uses one global log fit.
+2. **Build a term list:** `1`, each input, each product of two inputs, plus the
+   proposed terms.
+3. **Fit fractions as a linear problem** (as in SINDy-PI): `y = N/D` becomes
+   `y·D = N`, with `N` and `D` sparse sums of terms. Candidates are every law with up
+   to 4 terms, plus larger ones (up to 5 coefficients) from STLSQ and forward
    selection.
-4. **Decide by held-out error.** Each candidate is scored by 5-fold cross-validation
-   repeated over 5 random splits, on mean squared relative error, with coefficients
-   refined by least squares on the relative error. Pick the fewest terms whose error is
-   within one standard error of the best; ties go to lower total power.
+4. **Decide by held-out error:** 5-fold cross-validation repeated 5 times on relative
+   error. Pick the fewest terms within one standard error of the best; ties go to the
+   lower total power.
 
-| setting | value | meaning |
+**What it cannot write:** `sin`, `cos`, `exp`, `log`; powers with a denominator above 3
+or above 3 in size; laws with more than 5 coefficients; products of more than two inputs
+unless step 1 proposes them. It also cannot write fractional powers of inputs that are
+not all positive. Step 1 is skipped if any `y` is exactly 0.
+
+| setting | default | meaning |
 |---|---|---|
 | `MAX_FREE` | 5 | most free coefficients in a law (N and D together) |
 | `EXHAUSTIVE_TERMS` | 4 | every law with up to this many terms is tried |
-| `SCREEN_KEEP` | 30 | per law size, candidates kept after the quick screen |
+| `SCREEN_KEEP` | 30 | per law size, candidates kept after a quick screen |
 | `POWER_SE`, `POWER_FLOOR` | 3, 0.03 | step 1 tolerance: 3 standard errors, at least 0.03 |
 | `POWER_KEEP` | 2 | at most 2 proposed fractions per input |
 | `FOLDS`, `REPEATS`, `CV_SEED` | 5, 5, 0 | cross-validation (leave-one-out below 10 rows) |
 | `CV_FLOOR` | 1e-10 | errors closer than this count as equal |
-| `POWER_DENOMINATORS` | (1, 2, 3) | side-run switch: step 1's fractions k/d use these d |
-| `POWER_FREE`, `POWER_FREE_DIGITS` | False, 2 | side-run switch: if no fraction fits, propose the estimate rounded to 2 decimals |
+| `POWER_DENOMINATORS` | (1, 2, 3) | step 1's fractions k/d use these d |
+| `POWER_FREE`, `POWER_FREE_DIGITS` | False, 2 | if no fraction fits, propose the estimate rounded to 2 decimals |
 
-The two side-run switches were added after every benchmark below. Their defaults give
-identical results; see `findings/hybrid_power_switches.md`.
-
-**What it cannot write:** `sin`, `cos`, `exp`, `log`; powers with a denominator above 3 or
-above 3 in size; laws with more than 5 free coefficients; products of more than two
-inputs unless step 1 proposes them; fractional powers of inputs that are not all
-positive. Step 1 is skipped if any `y` is exactly 0.
+`POWER_DENOMINATORS` and `POWER_FREE` were added after the Feynman benchmarks below. At
+their defaults, basin gives exactly the benchmarked results.
 
 ## Benchmarks
 
-All results are from bacon-vs-pysindy. The rules for each test were written down before
-it ran, and the hybrid was not changed after seeing any result. "Exact law" means the
-right terms with every number within 5% of its true value (equivalent rearrangements
-count). Noise is Gaussian on the measured output with sd = level × |y|.
+basin was developed under the name "the hybrid", and the result files, the CSVs and
+`findings/` still call it `Hybrid`. For each test, the rules were written down before it
+ran, and the method was not changed after seeing any result. The exceptions are marked:
+Tests 13–14 (it was designed after seeing these) and the real-data runs. "Exact law"
+means the right terms with every number within 5% of its true value (equivalent
+rearrangements count). Noise is Gaussian on the measured output, with sd = level × |y|.
 
-### Test 15: the AI Feynman benchmark (79 laws, the hybrid was not designed on these)
+### Summary: basin against PySR
+
+- **Algebraic laws: level.** On the 59 laws without `sin`, `cos`, `exp` or `arcsin`, the
+  two find about the same laws at every noise level (after-the-run split, not
+  significant).
+  - Basin is more reliable on some laws: 10 of 10 runs at every noise level, where
+    PySR gets 3–4 of 10 on I.18.4 `(m1*r1 + m2*r2)/(m1 + m2)` and 2–5 on III.21.20
+    `-rho_c_0*q*A_vec/m`.
+  - PySR finds II.37.1 `mom*(1 + chi)*B` in 10 of 10 runs at every noise level, and
+    I.16.6 on clean data. Basin finds neither in any run. `chi` gets no proposed
+    power, so the term `mom*chi*B` is not in its list.
+- **Trig and exponential laws: PySR only.** Basin cannot write them. This is the
+  whole of PySR's lead in the overall counts.
+- **Noise: basin's law count barely moves** (43, 43, 42, 41 laws). But its
+  coefficients shrink with noise (Test 15), so PySR's answers are closer to the true law
+  at 5–10% noise.
+- **Clean data: PySR sometimes adds a tiny extra term**, e.g.
+  `omega_0*v/(c - v + 7.18e-8) + omega_0`. That costs it 11 laws that it finds at 1%
+  noise.
+- **Small designs (5–27 rows, Tests 13–14): basin holds up better.** PySR builds
+  long formulas that fit the few points. Neither finds the ideal gas law, because
+  `T + 273` and its first-order twin fit equally well over the narrow range of `T`.
+- **Fewer rows on the 79 Feynman laws (Tests 16–17): the result depends on how PySR
+  chooses its formula.**
+  - With PySR's default (`"best"`, Test 16) basin beats it at every noise level, at
+    about 100 and about 30 rows (every p ≤ 0.003). PySR finds 4, 2 and 1 laws with noise
+    at about 100 rows, and none at about 30.
+  - With `"score"` (Test 17) the two are level at about 100 rows. At about 30 rows PySR
+    beats basin with noise (41 laws to 10, 41 to 10, 36 to 9), mostly on the
+    4-input laws, which then have 2 levels per input.
+  - So Test 16 does not confirm Tests 13–14's "basin holds up better with few
+    rows" against PySR at its best. Tests 13–14 used PySR's default choice too.
+- **Cost: basin needs about a fifth of PySR's CPU time** (34 against 181 CPU-hours
+  for Test 15, 13 against 55 at about 100 rows), and about a quarter to a third at about
+  30 rows (12 against 43).
+
+### Test 15: the AI Feynman benchmark (79 laws, basin was not designed on these)
 
 - **Laws:** every AI Feynman equation (Udrescu & Tegmark 2020) with at most 4 inputs, 79
   laws. No other filtering.
@@ -147,7 +169,7 @@ count). Noise is Gaussian on the measured output with sd = level × |y|.
 | BACON (original) | 40 of 79 | 28 of 79 | 19 of 79 | 14 of 79 |
 | BACON-robust | 44 of 79 | 41 of 79 | 36 of 79 | 14 of 79 |
 | PySINDy | 35 of 79 | 0 of 79 | 0 of 79 | 0 of 79 |
-| **Hybrid** | 43 of 79 | 43 of 79 | 42 of 79 | 41 of 79 |
+| **basin** | 43 of 79 | 43 of 79 | 42 of 79 | 41 of 79 |
 | **PySR** | 42 of 79 | 50 of 79 | 50 of 79 | 49 of 79 |
 
 **The same, split by kind of law.** The split was made after the run, from the true
@@ -156,7 +178,7 @@ formulas:
 - **B:** other algebraic laws: sums, fractions with sums, roots of sums.
 - **C:** laws with `sin`, `cos`, `exp` or `arcsin`.
 
-| kind of law | noise | BACON (original) | BACON-robust | PySINDy | Hybrid | PySR |
+| kind of law | noise | BACON (original) | BACON-robust | PySINDy | basin | PySR |
 |---|---|---|---|---|---|---|
 | A: one product of powers (35 laws) | no noise | 34 | 35 | 32 | 35 | 30 |
 |  | 1% noise | 28 | 34 | 0 | 35 | 34 |
@@ -171,12 +193,12 @@ formulas:
 |  | 5% noise | 0 | 0 | 0 | 0 | 9 |
 |  | 10% noise | 0 | 0 | 0 | 0 | 8 |
 
-**Hybrid against PySR, law by law.** Each count is the number of laws where that method
+**basin against PySR, law by law.** Each count is the number of laws where that method
 finds the exact law in more runs than the other. The sign test is two-sided. The "all 79"
 rows were the test's decision rule. The splits by kind were made after the run, so they
 describe the results rather than test them.
 
-| laws | noise | Hybrid finds the law in more runs | PySR finds it in more runs | same | sign test |
+| laws | noise | basin finds the law in more runs | PySR finds it in more runs | same | sign test |
 |---|---|---|---|---|---|
 | all 79 | no noise | 8 | 7 | 64 | p = 1 |
 |  | 1% noise | 6 | 21 | 52 | p = 0.0059 |
@@ -203,7 +225,7 @@ describe the results rather than test them.
 did not find the exact law. Error is the relative RMS error at 200 random points in the
 ranges. Each cell counts the runs whose answer is within that error.
 
-| laws | noise | runs | within 0.1%: Hybrid | PySR | within 1%: Hybrid | PySR | within 5%: Hybrid | PySR |
+| laws | noise | runs | within 0.1%: basin | PySR | within 1%: basin | PySR | within 5%: basin | PySR |
 |---|---|---|---|---|---|---|---|---|
 | all 79 | no noise | 79 each | 43 | 66 | 53 | 73 | 61 | 75 |
 |  | 1% noise | 790 each | 423 | 483 | 528 | 718 | 618 | 766 |
@@ -214,20 +236,20 @@ ranges. Each cell counts the runs whose answer is within that error.
 |  | 5% noise | 590 each | 0 | 206 | 472 | 429 | 540 | 570 |
 |  | 10% noise | 590 each | 0 | 176 | 0 | 380 | 543 | 523 |
 
-**The hybrid's numbers shrink with noise.** On runs that find the exact law, the median
+**Basin's numbers shrink with noise.** On runs that find the exact law, the median
 prediction error is:
 
-| noise | Hybrid: exact runs | median error | PySR: exact runs | median error |
+| noise | basin: exact runs | median error | PySR: exact runs | median error |
 |---|---|---|---|---|
 | no noise | 43 | 0.00% | 42 | 0.00% |
 | 1% noise | 430 | 0.04% | 522 | 0.02% |
 | 5% noise | 422 | 0.57% | 517 | 0.09% |
 | 10% noise | 410 | 2.27% | 491 | 0.21% |
 
-On simple products the hybrid answers `0.9927*Nn*mu` at 5% noise and `0.9751*Nn*mu` at
+On simple products basin answers `0.9927*Nn*mu` at 5% noise and `0.9751*Nn*mu` at
 10% (`F = mu*Nn`; the same on `m*g*z`, `q/C`, `Ef*q2`), in every run. PySR answers `Nn*mu`.
 
-- **The cause is the hybrid's fitting rule.** Step 4 fits on error relative to the noisy
+- **The cause is basin's fitting rule.** Step 4 fits on error relative to the noisy
   `y`, `(prediction − y)/y`. Dividing by a noisy `y` pulls every coefficient down by about
   2σ²: 0.5% at 5% noise, 2% at 10%.
 - **The verdicts don't change.** These answers are still within the 5% check, so this
@@ -237,9 +259,9 @@ On simple products the hybrid answers `0.9927*Nn*mu` at 5% noise and `0.9751*Nn*
   1, which PySR can write with no fitted number at all.
 
 **Run time** (all methods running 18 jobs in parallel on a 22-thread laptop at about
-1.2 GHz. Rerun alone on this laptop, four hybrid runs took 3 to 9 times less time):
+1.2 GHz. Rerun alone on this laptop, four basin runs took 3 to 9 times less time):
 
-| inputs | laws | Hybrid, median seconds per run | PySR, median seconds per run |
+| inputs | laws | basin, median seconds per run | PySR, median seconds per run |
 |---|---|---|---|
 | 1 | 1 | 6 | 131 |
 | 2 | 15 | 17 | 102 |
@@ -269,14 +291,14 @@ coefficient check):
 | PySINDy | about 1000 (Test 15) | 35 | 0 | 0 | 0 |
 |  | about 100 | 34 | 1 | 0 | 0 |
 |  | about 30 | 30 | 6 | 0 | 0 |
-| Hybrid | about 1000 (Test 15) | 43 | 43 | 42 | 41 |
+| basin | about 1000 (Test 15) | 43 | 43 | 42 | 41 |
 |  | about 100 | 43 | 43 | 41 | 37 |
 |  | about 30 | 43 | 29 | 26 | 23 |
 | PySR | about 1000 (Test 15) | 42 | 50 | 50 | 49 |
 |  | about 100 | 24 | 4 | 2 | 1 |
 |  | about 30 | 28 | 0 | 0 | 0 |
 
-**Hybrid against PySR, head to head.** Each cell: laws where the hybrid finds the exact
+**basin against PySR, head to head.** Each cell: laws where basin finds the exact
 law in more runs than PySR, then laws where PySR does, then the two-sided sign test.
 
 | rows per law | no noise | 1% noise | 5% noise | 10% noise |
@@ -288,7 +310,7 @@ law in more runs than PySR, then laws where PySR does, then the two-sided sign t
 With the original coefficient check, the 1% verdict at about 100 rows is level (36 to 21,
 p = 0.063). Every other cell above is significant either way.
 
-**The hybrid by number of inputs** (laws found in more than half the runs; no noise, 1%,
+**Basin by number of inputs** (laws found in more than half the runs; no noise, 1%,
 5%, 10%):
 
 | inputs (laws) | Test 15 | about 100 rows | about 30 rows |
@@ -299,7 +321,7 @@ p = 0.063). Every other cell above is significant either way.
 | 4 (27) | 6 levels: 13, 13, 13, 13 | 3 levels: 13, 13, 12, 11 | 2 levels: 13, 3, 2, 0 |
 
 **Median prediction error** (normalized RMS error at 200 random points, all runs; both
-methods return a formula in every run). Hybrid / PySR:
+methods return a formula in every run). basin / PySR:
 
 | rows per law | 1% noise | 5% noise | 10% noise |
 |---|---|---|---|
@@ -307,9 +329,9 @@ methods return a formula in every run). Hybrid / PySR:
 | about 100 | 0.20% / 0.70% | 1.3% / 3.4% | 3.4% / 6.7% |
 | about 30 | 0.76% / 2.0% | 3.4% / 8.4% | 6.7% / 15% |
 
-- **PySR, with its default choice, collapses with noise and few rows; the hybrid does
-  not** (with `"score"` it does not collapse either: Test 17). At about 100 rows the
-  hybrid is almost unchanged from Test 15. PySR finds 4, 2 and 1 laws with noise, and none
+- **PySR, with its default choice, collapses with noise and few rows; basin does
+  not** (with `"score"` it does not collapse either: Test 17). At about 100 rows,
+  basin is almost unchanged from Test 15. PySR finds 4, 2 and 1 laws with noise, and none
   at about 30 rows.
 - **Why PySR collapses** (checked on one run, I.12.1 `F = mu*Nn`, about 100 rows, 1%
   noise):
@@ -321,36 +343,35 @@ methods return a formula in every run). Hybrid / PySR:
   - With Test 15's 1024 rows, long formulas reach only 0.0093 against 0.0098, so
     `Nn*mu` is chosen.
   - Test 17 (below) reran these PySR runs with its `"score"` choice.
-- **The hybrid's weak spot is 2 levels per input with noise:** the 4-input laws at about
+- **Basin's weak spot is 2 levels per input with noise:** the 4-input laws at about
   30 rows (16 rows) drop from 13 to 3, 2 and 0. Two points cannot tell a straight line
   from a curve, so many wrong formulas fit the data equally well. It also loses the other
   algebraic laws (kind B) with noise at about 30 rows: 6, 0 and 0, against 8, 7 and 6 in
   Test 15.
-- Full analysis, including BACON and PySINDy: bacon-vs-pysindy README, Test 16.
 
 ### Test 17: Test 16 again, PySR choosing with `model_selection="score"`
 
 - **Setup:** Test 16's data, seeds and PySR settings, with one change. PySR picks the
   formula with the highest score among the ones it kept (`"score"`), with no loss
   cut-off. Its default `"best"` only looks at formulas within 1.5 times the lowest loss.
-  The hybrid was not rerun: its Test 16 answers are compared run for run.
+  Basin was not rerun: its Test 16 answers are compared run for run.
 - **Check:** PySR's search repeated exactly. In all 4,898 runs the formula `"best"`
   would pick is Test 16's answer, so only the choice changed.
-- Rules were written down before running (bacon-vs-pysindy README, Test 17). PySR got
-  this second setting after its first failed; the hybrid got no second setting.
+- Rules were written down before running. PySR got
+  this second setting after its first failed; basin got no second setting.
 
 **Laws found in more than half the runs** (of 79; fixed coefficient check):
 
 | method | rows per law | no noise | 1% noise | 5% noise | 10% noise |
 |---|---|---|---|---|---|
-| Hybrid | about 100 | 43 | 43 | 41 | 37 |
+| basin | about 100 | 43 | 43 | 41 | 37 |
 | PySR, `"best"` (Test 16) | about 100 | 24 | 4 | 2 | 1 |
 | PySR, `"score"` | about 100 | 50 | 45 | 38 | 34 |
-| Hybrid | about 30 | 43 | 29 | 26 | 23 |
+| basin | about 30 | 43 | 29 | 26 | 23 |
 | PySR, `"best"` (Test 16) | about 30 | 28 | 0 | 0 | 0 |
 | PySR, `"score"` | about 30 | 45 | 46 | 37 | 29 |
 
-**Hybrid against PySR with `"score"`, head to head.** Each cell: laws where the hybrid
+**basin against PySR with `"score"`, head to head.** Each cell: laws where basin
 finds the exact law in more runs, then laws where PySR does, then the two-sided sign test.
 
 | rows per law | no noise | 1% noise | 5% noise | 10% noise |
@@ -359,7 +380,7 @@ finds the exact law in more runs, then laws where PySR does, then the two-sided 
 | about 30 | 8 to 10, p = 0.81 | 10 to 41, p = 1.5e-05 | 10 to 41, p = 1.5e-05 | 9 to 36, p = 6.6e-05 |
 
 **By kind of law** (A one product of powers, B other algebraic, C with `sin`, `cos`, `exp`
-or `arcsin`), laws found in more than half the runs, hybrid / PySR with `"score"`:
+or `arcsin`), laws found in more than half the runs, basin / PySR with `"score"`:
 
 | kind | rows per law | no noise | 1% noise | 5% noise | 10% noise |
 |---|---|---|---|---|---|
@@ -370,7 +391,7 @@ or `arcsin`), laws found in more than half the runs, hybrid / PySR with `"score"
 | C (20) | about 100 | 0 / 8 | 0 / 6 | 0 / 4 | 0 / 4 |
 | C (20) | about 30 | 0 / 8 | 0 / 8 | 0 / 6 | 0 / 4 |
 
-**Median prediction error** at 200 random points, hybrid / PySR with `"score"` (PySR with
+**Median prediction error** at 200 random points, basin / PySR with `"score"` (PySR with
 `"best"` in brackets):
 
 | rows per law | 1% noise | 5% noise | 10% noise |
@@ -379,28 +400,27 @@ or `arcsin`), laws found in more than half the runs, hybrid / PySR with `"score"
 | about 30 | 0.76% / 0.46% (2.0%) | 3.4% / 2.8% (8.4%) | 6.7% / 5.7% (15%) |
 
 - **Test 16's win over PySR came from PySR's default choice.** With `"score"`, PySR finds
-  about as many laws as the hybrid at about 100 rows, and more at about 30 rows with
+  about as many laws as basin at about 100 rows, and more at about 30 rows with
   noise.
-- **At about 100 rows the two are level, but on different laws.** The hybrid keeps every
+- **At about 100 rows the two are level, but on different laws.** Basin keeps every
   product-of-powers law (A) at every noise level, where PySR loses up to 10. PySR finds
-  4 to 8 trig and exponential laws (C), which the hybrid cannot write.
+  4 to 8 trig and exponential laws (C), which basin cannot write.
 - **At about 30 rows PySR is better with noise.** Most of the difference is the 4-input
-  laws, which then have 2 levels per input: the hybrid finds 13, 3, 2 and 0 of 27,
-  PySR 13, 10, 8 and 7. This is the hybrid's weak spot from Test 16.
-- **PySR's answers now predict slightly better than the hybrid's** at every noise level
+  laws, which then have 2 levels per input: basin finds 13, 3, 2 and 0 of 27,
+  PySR 13, 10, 8 and 7. This is basin's weak spot from Test 16.
+- **PySR's answers now predict slightly better than basin's** at every noise level
   and both sizes.
 - **`"score"` hardly costs PySR anything.** It loses one law that `"best"` found (I.30.5
   at about 100 rows and 1% noise: it answers `lambd/(d*n)`, the small-angle form of
   `asin(lambd/(n*d))`), and on clean data it finds 26 and 17 more laws.
-- Full analysis: bacon-vs-pysindy README, Test 17.
 
 ### Run time against number of rows (Tests 15 and 16)
 
 Every method ran 18 jobs in parallel on the laptop above, so both methods are slower than
-on an idle machine. In the Test 16 pilot on an idle machine, PySR took 35–45 s and the
-hybrid 3–13 s per run.
+on an idle machine. In the Test 16 pilot on an idle machine, PySR took 35–45 s and
+basin 3–13 s per run.
 
-| rows per law | Hybrid, median seconds per run | PySR, median seconds per run | PySR slower by | total CPU-hours, Hybrid / PySR |
+| rows per law | basin, median seconds per run | PySR, median seconds per run | PySR slower by | total CPU-hours, basin / PySR |
 |---|---|---|---|---|
 | about 1000 (Test 15) | 46 | 218 | 4.8× | 34 / 181 |
 | about 100 (Test 16) | 17 | 79 | 4.6× | 13 / 55 |
@@ -408,23 +428,23 @@ hybrid 3–13 s per run.
 
 - **PySR is slower at every size.** The gap shrinks with fewer rows: about 5× at 1000
   and 100 rows, about 4× at 30.
-- **The hybrid's time barely changes between 100 and 30 rows** (17 against 16 s). Most of
+- **Basin's time barely changes between 100 and 30 rows** (17 against 16 s). Most of
   its time goes on trying combinations of terms and on repeated cross-validation (5 folds
   × 5 repeats), not on the rows themselves.
 - **PySR gets faster as rows drop.** It runs a fixed number of search rounds and checks
   every candidate formula on every row, so fewer rows means less work per round.
 
-### Tests 13–14: BACON's own five laws (the hybrid was designed after seeing these)
+### Tests 13–14: BACON's own five laws (basin was designed after seeing these)
 
 Exact-law runs. "given" is the authors' own small design and "dense" a larger grid. Same
 data for every method, run for run. BACON is the original at its code defaults.
 
 - **PySR 2.7.2 settings:** defaults with `+ - * /` only, maximum size 30, deterministic.
 - **Kepler is outside PySR's formulas** with these operators: it cannot write `P^(2/3)`.
-- **This is a development check, not a fair contest:** the hybrid was designed knowing
+- **This is a development check, not a fair contest:** basin was designed knowing
   how BACON and PySINDy failed on these laws.
 
-| law | design | noise | BACON | PySINDy | Hybrid | PySR |
+| law | design | noise | BACON | PySINDy | basin | PySR |
 |---|---|---|---|---|---|---|
 | ideal gas `V = M(T + 273)/P` | given (27 rows) | none (1 run) | 0 | 0 | **1** | **1** |
 |  |  | 1% (20 runs) | 0 | 0 | 0 | **2** |
@@ -467,42 +487,6 @@ data for every method, run for run. BACON is the original at its code defaults.
 |  |  | 5% (20 runs) | 0 | 0 | **1** | 0 |
 |  |  | 10% (20 runs) | 0 | 0 | 0 | 0 |
 
-### What the benchmarks say about the hybrid against PySR
-
-- **Algebraic laws: level.** On the 59 laws without `sin`, `cos`, `exp` or `arcsin`, the
-  two find about the same laws at every noise level (after-the-run split, not
-  significant).
-  - The hybrid is more reliable on some laws: 10 of 10 runs at every noise level, where
-    PySR gets 3–4 of 10 on I.18.4 `(m1*r1 + m2*r2)/(m1 + m2)` and 2–5 on III.21.20
-    `-rho_c_0*q*A_vec/m`.
-  - PySR finds II.37.1 `mom*(1 + chi)*B` in 10 of 10 runs at every noise level, and
-    I.16.6 on clean data. The hybrid finds neither in any run. `chi` gets no proposed
-    power, so the term `mom*chi*B` is not in its list.
-- **Trig and exponential laws: PySR only.** The hybrid cannot write them. This is the
-  whole of PySR's lead in the overall counts.
-- **Noise: the hybrid's law count barely moves** (43, 43, 42, 41 laws). But its
-  coefficients shrink with noise (above), so PySR's answers are closer to the true law
-  at 5–10% noise.
-- **Clean data: PySR sometimes adds a tiny extra term**, e.g.
-  `omega_0*v/(c - v + 7.18e-8) + omega_0`. That costs it 11 laws that it finds at 1%
-  noise.
-- **Small designs (5–27 rows, Tests 13–14): the hybrid holds up better.** PySR builds
-  long formulas that fit the few points. Neither finds the ideal gas law, because
-  `T + 273` and its first-order twin fit equally well over the narrow range of `T`.
-- **Fewer rows on the 79 Feynman laws (Tests 16–17): the result depends on how PySR
-  chooses its formula.**
-  - With PySR's default (`"best"`, Test 16) the hybrid beats it at every noise level, at
-    about 100 and about 30 rows (every p ≤ 0.003). PySR finds 4, 2 and 1 laws with noise
-    at about 100 rows, and none at about 30.
-  - With `"score"` (Test 17) the two are level at about 100 rows. At about 30 rows PySR
-    beats the hybrid with noise (41 laws to 10, 41 to 10, 36 to 9), mostly on the
-    4-input laws, which then have 2 levels per input.
-  - So Test 16 does not confirm Tests 13–14's "the hybrid holds up better with few
-    rows" against PySR at its best. Tests 13–14 used PySR's default choice too.
-- **Cost: the hybrid needs about a fifth of PySR's CPU time** (34 against 181 CPU-hours
-  for Test 15, 13 against 55 at about 100 rows), and about a quarter to a third at about
-  30 rows (12 against 43).
-
 ### Real neuroscience data (exploratory; full write-ups in `findings/`)
 
 - **Three measured datasets,** run on 2026-11-16 with the same method settings as above
@@ -514,13 +498,13 @@ data for every method, run for run. BACON is the original at its code defaults.
 - **Fits:**
   - Allen: 5 splits of 80/20 over 2,336 cells.
   - NeuroMorpho: 5 fits of 2,000 neurons each, scored on the same 50,000 held-out neurons.
-- **Hybrid-free** is the hybrid with the side-run switch `POWER_FREE = True` (see the
-  settings table). It was added *after* the benchmark hybrid failed the wiring test, so
+- **basin-free** is basin with `POWER_FREE = True` (see the settings table). It was
+  added *after* basin at its defaults failed the wiring test, so
   its wiring result is a development check, like Tests 13–14, not an independent test.
 
 **Held-out median error / RMS log error** (lower is better):
 
-| dataset | Hybrid | Hybrid-free | PySR "best" | PySR "score" | PySINDy | best simple reference |
+| dataset | basin | basin-free | PySR "best" | PySR "score" | PySINDy | best simple reference |
 |---|---|---|---|---|---|---|
 | Allen: rheobase ← R, τ, gap | 29.0% / 0.486 | 28.8% / 0.483 | 26.6% / **0.443** | 31.9% / 0.481 | **24.6%** / 0.530 | 25.6% / 0.405 (`515·gap/R`) |
 | NeuroMorpho: volume ← S, L, d | **7.8% / 0.232** | **7.8% / 0.232** | 30.1% / 0.531 | 36.9% / 0.500 | 22.9% / 1.371 | 1.5% / 0.290 (`S·d/4`) |
@@ -528,19 +512,19 @@ data for every method, run for run. BACON is the original at its code defaults.
 
 **Readable law found** (fits giving it):
 
-| dataset | Hybrid | Hybrid-free | PySR | PySINDy |
+| dataset | basin | basin-free | PySR | PySINDy |
 |---|---|---|---|---|
 | Allen | `gap/R` 6 of 6 | `gap/R` 3 of 6, `gap^0.8/R` 3 | `gap/R` 0 of 6 | about 300 terms |
 | Volume | cylinder law 5 of 5 (`S²/L`) | the same | `c·S·d` 3 of 10 picks | 195 terms |
 | Wiring | none (sums of integer terms) | the power law in 5 of 5, plus small extra terms | none | 617 terms |
 
-- **Where the hybrid is clearly ahead: the volume and wiring tests.** Its held-out error is
+- **Where basin is clearly ahead: the volume and wiring tests.** Its held-out error is
   far below PySR's and PySINDy's on volume, and below both on wiring with
   `POWER_FREE`. It also finds a readable law in every fit, where PySINDy keeps hundreds of
   terms and PySR changes its answer from fit to fit.
 - **Allen: no clear winner on error.**
   - PySINDy has the lowest median error and PySR "best" the lowest log error.
-  - The hybrid is the only method that finds the textbook form `gap/R`, but its fitting
+  - Basin is the only method that finds the textbook form `gap/R`, but its fitting
     rule (relative error) pulls the coefficient to 393, against 515 for a log-scale fit.
 - **No method beats a simple reference,** except where that reference is the textbook
   law with the wrong constant.
@@ -548,110 +532,31 @@ data for every method, run for run. BACON is the original at its code defaults.
   half the splits. It has not been run on the Feynman benchmark (Tests 15–17), where
   free powers could add wrong candidates.
 
-## Ideas for testing the hybrid against PySR
-
-As in bacon-vs-pysindy: one test at a time, with rules written down before running and
-both methods frozen. Rough cost: about 4 hours per 1,000 PySR runs on this laptop with 18
-parallel jobs, about 1 hour per 1,000 hybrid runs.
-
-**No new runs: re-score the saved Test 15 answers**
-
-1. **Extrapolation.** Score every saved answer at points outside the training ranges
-   (e.g. each input up to twice its range). An exact law keeps working outside the range.
-   A formula that only fits inside it stops working, e.g. PySR's
-   `1.012*m_0*(1 + exp(-c/v))` for I.10.7. This shows how much each method's "close but
-   not exact" answers are worth. It costs minutes.
-
-**New runs, both methods unchanged**
-
-2. **Random samples instead of a grid.** Test 15 gave every method a factorial grid,
-   which is BACON's kind of data and the hybrid's home turf. Standard symbolic-regression
-   benchmarks (SRBench, SRSD) sample inputs at random, so there are no slices, and step 1
-   falls back to one global fit. This asks whether the hybrid's strength depends on
-   designed experiments. Same 79 laws and row counts.
-3. **Noise of constant size** (sd = level × RMS of y, the SRBench convention) instead of
-   noise proportional to |y|. The current noise suits the hybrid's log fits and relative
-   errors. With constant noise, small values of `y` get large relative noise and can
-   change sign. Pairs naturally with idea 2 as one test with four conditions: grid or
-   random, proportional or constant noise.
-4. **Higher noise: 15%, 20%, 30%.** This tests the bias above. The prediction is that
-   the hybrid starts missing laws it has the right terms for, at around 15–20%.
-5. **Fewer rows. Done as Test 16** (about 100 and about 30 rows, above). PySR with its
-   default choice collapsed with noise (not with `"score"`, Test 17). The hybrid held at
-   about 100 rows and lost the 2-level laws at about 30.
-6. **Constants that are not 1.** Many Feynman laws can be written with no fitted number,
-   which PySR does exactly. Two ways to remove that edge:
-   - Multiply each law by a random constant.
-   - Use SRSD-Feynman (Matsubara et al.), which keeps the physical constants and more
-     realistic ranges.
-
-   This also tests the hybrid with very small or large values, e.g. ε₀ ≈ 8.85e-12.
-7. **Irrelevant inputs.** Add 1–3 inputs that do not affect `y`; SRSD has "dummy
-   variable" versions for this. Both methods must leave them out. The hybrid's term list
-   grows with the square of the number of inputs.
-8. **More inputs: the 21 Feynman laws with 5–9 inputs**, held out so far.
-   - 8 of them use trig or exp: I.12.11, I.40.1, I.41.16, II.11.17, II.35.18, II.35.21,
-     III.9.52, III.14.14.
-   - This tests how the hybrid's search scales, and whether its 5-coefficient limit
-     blocks laws.
-9. **PySR given more:**
-   - 10 times the iterations: does more search find more laws, or add more extra
-     terms?
-   - Its "score" model selection instead of "best". **Done as Test 17** on Test 16's
-     data: PySR's collapse goes away, and on clean data it finds 26 and 17 more laws.
-     Not yet run on Test 15's data (about 1000 rows), where the clean-data extra terms
-     were first seen.
-   - Only the hybrid's operators on the algebraic laws.
-
-   This checks that PySR is not handicapped by its default settings.
-
-**Changes to the hybrid (each a switch, frozen before the test)**
-
-10. **Remove the coefficient bias:** refine on error relative to the fitted value instead
-    of the noisy `y`, repeating the fit. Test together with idea 4.
-11. **`sin`, `cos`, `exp` shapes in step 1.** Propose `g(x_j)` for a small set of shapes,
-    the same way as powers. This could reach 9 of the 20 trig laws: I.18.12, I.18.14,
-    II.6.11, II.6.15b, II.15.4, II.15.5, III.17.37, I.37.4, I.6.2a. The other 11 need the
-    inside of the function found too (e.g. `ω·t` or `θ/σ`).
-12. **Ablations: switch off one part at a time** — the BACON step, the fraction form, or
-    cross-validation (in-sample error instead). This shows which part makes the
-    difference against PySR before building more on it (e.g. ABACUS ideas).
-13. **The BACON step inside PySR:** give PySR the proposed terms `x_j^p` as extra inputs.
-    This shows whether BACON's proposals help a genetic search too.
-
-**Suggested order:**
-1. Idea 1: it is free.
-2. Idea 9's model-selection check on Test 16's data: done (Test 17). Comparisons with
-   PySR from here on should use `"score"`, or report both choices.
-3. Ideas 2 + 3 as the next test, run on fresh noise seeds. It would also repeat the
-   after-the-run "level on algebraic laws" result as a proper test.
-4. Ideas 4 + 10, then idea 11.
-
 ## Files
 
 | file | what it is |
 |---|---|
-| `basin/core.py` | the method (copy of bacon-vs-pysindy's `hybrid.py`, see above) |
-| `basin/__init__.py` | the library API: `discover` (accepts names), `settings` |
-| `hybrid.py` | shim: `import hybrid` gives `basin.core` |
-| `tests/`, `pyproject.toml`, `Makefile` | tests, packaging, release targets |
-| `example.py` | small example: Black's law from a noisy 81-row grid |
-| `requirements.txt` | package versions used for every result above |
+| `basin/core.py` | the method |
+| `basin/__init__.py` | the library API: `discover`, `settings` |
+| `hybrid.py` | alias: `import hybrid` gives `basin.core` (used by the runners) |
+| `example.py` | the quick-start example: Black's law from a noisy 81-row grid |
+| `tests/` | tests (`make test`) |
+| `requirements.txt` | the exact package versions used for every result here (Python 3.10) |
 | `benchmarks/test15_feynman.csv` | Test 15, every law × method × noise level: runs, exact (fixed and original check), right terms, median prediction error, median seconds |
-| `benchmarks/test15_hybrid_pysr_answers.csv` | every hybrid and PySR answer in Test 15 (4 significant digits), with its verdict |
+| `benchmarks/test15_hybrid_pysr_answers.csv` | every basin and PySR answer in Test 15 (4 significant digits), with its verdict |
 | `benchmarks/test16_feynman.csv` | Test 16, every grid × law × method × noise level: levels per input, rows, runs, exact (fixed and original check), right terms, median prediction error, median seconds |
-| `benchmarks/test16_hybrid_pysr_answers.csv` | every hybrid and PySR answer in Test 16 (4 significant digits), with its verdict |
-| `benchmarks/test17_feynman.csv` | Test 17, every grid × law × noise level for the hybrid, PySR with "best" (Test 16) and PySR with "score": runs, exact (fixed and original check), right terms, median prediction error |
+| `benchmarks/test16_hybrid_pysr_answers.csv` | every basin and PySR answer in Test 16 (4 significant digits), with its verdict |
+| `benchmarks/test17_feynman.csv` | Test 17, every grid × law × noise level for basin, PySR with "best" (Test 16) and PySR with "score": runs, exact (fixed and original check), right terms, median prediction error |
 | `benchmarks/test17_pysr_score_answers.csv` | every PySR answer with "score" in Test 17 (4 significant digits), with its verdict |
 | `benchmarks/tests12_14_bacon_laws.csv` | Tests 12–14, BACON's five laws, every method |
 | `findings/` | write-ups of the real-data runs (Allen, NeuroMorpho volume and wiring, the power switches) |
 | `allen/run_allen.py`, `allen/results/` | Allen Cell Types runner, per-fit answers and `allen_scores.csv` |
 | `neuromorpho/run_neuromorpho.py`, `neuromorpho/run_wiring.py`, `neuromorpho/results*/` | NeuroMorpho runners (volume, wiring), per-fit answers and scores |
-| `data/allen/`, `data/neuromorpho/` | not in git (197 MB): the raw downloads (Allen API JSON, NeuroMorpho morphometry pages and merged CSV) |
+| `data/allen/`, `data/neuromorpho/` | not in the repo (197 MB): the raw downloads (Allen API JSON, NeuroMorpho morphometry pages and merged CSV) |
 
-## Per-law results, Test 15: hybrid / PySR
+## Per-law results, Test 15: basin / PySR
 
-Exact-law runs, hybrid first, then PySR; the larger is in bold. Kind: A one product of
+Exact-law runs, basin first, then PySR; the larger is in bold. Kind: A one product of
 powers, B other algebraic, C with `sin`, `cos`, `exp` or `arcsin`.
 
 | law | kind | formula | no noise (1 run) | 1% (10 runs) | 5% (10 runs) | 10% (10 runs) |
