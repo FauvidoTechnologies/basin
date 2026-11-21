@@ -1,0 +1,1 @@
+Hybrid-free 1 45.28 s {'Hybrid-free': '0.08571*S**2/L'}

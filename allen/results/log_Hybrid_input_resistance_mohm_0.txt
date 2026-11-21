@@ -1,0 +1,1 @@
+Hybrid input_resistance_mohm 0 20.8 s {'Hybrid': '1.0*(191.6*gap*tau + 4336.0*gap)/(R*tau)'}

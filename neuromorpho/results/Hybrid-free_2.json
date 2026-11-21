@@ -1,0 +1,12 @@
+{
+ "method": "Hybrid-free",
+ "fit": 2,
+ "n_train": 2000,
+ "seconds": 38.68,
+ "formulas": {
+  "Hybrid-free": "Mul(Float('0.08617623347872938', precision=53), Pow(Symbol('L', positive=True), Integer(-1)), Pow(Symbol('S', positive=True), Integer(2)))"
+ },
+ "readable": {
+  "Hybrid-free": "0.08618*S**2/L"
+ }
+}

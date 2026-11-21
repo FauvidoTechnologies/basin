@@ -1,0 +1,12 @@
+{
+ "method": "Hybrid-free",
+ "fit": 2,
+ "n_train": 2000,
+ "seconds": 94.46,
+ "formulas": {
+  "Hybrid-free": "Mul(Float('2.6047691034133327', precision=53), Pow(Symbol('D', positive=True), Rational(7, 50)), Pow(Symbol('H', positive=True), Rational(14, 25)), Pow(Symbol('W', positive=True), Rational(29, 100)), Pow(Symbol('n', positive=True), Rational(21, 50)))"
+ },
+ "readable": {
+  "Hybrid-free": "2.605*D**0.14*H**0.56*W**0.29*n**0.42"
+ }
+}

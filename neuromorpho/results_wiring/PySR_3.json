@@ -1,0 +1,106 @@
+{
+ "method": "PySR",
+ "fit": 3,
+ "n_train": 2000,
+ "seconds": 115.0,
+ "formulas": {
+  "PySR \"best\"": "Add(Mul(Float('7.076524', precision=53), Symbol('D', positive=True)), Mul(Symbol('W', positive=True), Pow(Symbol('n', positive=True), Rational(1, 2))))",
+  "PySR \"score\"": "Mul(Float('0.73339843999999998', precision=53), Symbol('H', positive=True), Pow(Symbol('n', positive=True), Rational(1, 2)))"
+ },
+ "readable": {
+  "PySR \"best\"": "7.077*D + W*n**0.5",
+  "PySR \"score\"": "0.7334*H*n**0.5"
+ },
+ "pysr_kept": [
+  {
+   "complexity": 1,
+   "loss": 261932880.0,
+   "score": 0.0,
+   "equation": "H"
+  },
+  {
+   "complexity": 3,
+   "loss": 112636440.0,
+   "score": 0.42196150046891157,
+   "equation": "D * 7.7892227"
+  },
+  {
+   "complexity": 4,
+   "loss": 76485070.0,
+   "score": 0.3870697284097007,
+   "equation": "H * sqrt(n)"
+  },
+  {
+   "complexity": 5,
+   "loss": 63853612.0,
+   "score": 0.1805024074222823,
+   "equation": "7.708699 * (W + D)"
+  },
+  {
+   "complexity": 6,
+   "loss": 40263850.0,
+   "score": 0.46113910690982024,
+   "equation": "(H * sqrt(n)) * 0.73339844"
+  },
+  {
+   "complexity": 8,
+   "loss": 20647214.0,
+   "score": 0.3339368245019588,
+   "equation": "(D * 7.076524) + (sqrt(n) * W)"
+  },
+  {
+   "complexity": 10,
+   "loss": 20205314.0,
+   "score": 0.010817377966747907,
+   "equation": "((n + D) * 7.076524) + (sqrt(n) * W)"
+  },
+  {
+   "complexity": 11,
+   "loss": 17510150.0,
+   "score": 0.14316492632294964,
+   "equation": "(D + sqrt(W * (sqrt(W) * n))) * 7.480627"
+  },
+  {
+   "complexity": 13,
+   "loss": 15368786.0,
+   "score": 0.06522107169961955,
+   "equation": "((1.2020313 * sqrt((W * sqrt(W)) * n)) + D) * 7.076524"
+  },
+  {
+   "complexity": 15,
+   "loss": 15367160.0,
+   "score": 5.2902227298204526e-05,
+   "equation": "(D + (W / sqrt(W * (0.7014699 / (n * sqrt(W)))))) * 7.076524"
+  },
+  {
+   "complexity": 17,
+   "loss": 15091888.0,
+   "score": 0.009037692008196508,
+   "equation": "((W / sqrt((W * cos(cos(n))) / (n * sqrt(W)))) + D) * 7.076524"
+  },
+  {
+   "complexity": 19,
+   "loss": 14434179.0,
+   "score": 0.022279222538147344,
+   "equation": "(D + (W / sqrt((cos(cos(W + D)) / (sqrt(W) * n)) * W))) * 6.8142734"
+  },
+  {
+   "complexity": 22,
+   "loss": 14033467.0,
+   "score": 0.009384652977490861,
+   "equation": "((W / (sqrt(W / (sqrt(W) * n)) * cos(cos(n * (sqrt(H) / D))))) + D) * 6.38023"
+  },
+  {
+   "complexity": 24,
+   "loss": 14030281.0,
+   "score": 0.00011352724567249172,
+   "equation": "((W / (cos(cos((n / D) * sqrt(H))) * sqrt(W / (sqrt(W) * n)))) + (D - 6.38023)) * 6.38023"
+  },
+  {
+   "complexity": 30,
+   "loss": 14030256.0,
+   "score": 2.9697697279234477e-07,
+   "equation": "(((D - 6.38023) + (W / (cos(cos((n / D) * sqrt(H))) * sqrt(W / (sqrt(W) * n))))) * 6.38023) - ((n - -0.628303) - n)"
+  }
+ ]
+}

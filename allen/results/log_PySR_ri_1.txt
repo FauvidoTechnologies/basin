@@ -1,0 +1,1 @@
+PySR ri 1 140.99 s {'PySR "best"': '2.29e+4/(R + tau)', 'PySR "score"': '1.884e+4/R'}

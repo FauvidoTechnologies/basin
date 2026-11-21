@@ -1,0 +1,125 @@
+{
+ "method": "PySR",
+ "rcol": "ri",
+ "fold": "1",
+ "n_train": 1869,
+ "seconds": 140.99,
+ "formulas": {
+  "PySR \"best\"": "Mul(Float('22898.256000000001', precision=53), Pow(Add(Symbol('R', positive=True), Symbol('tau', positive=True)), Integer(-1)))",
+  "PySR \"score\"": "Mul(Float('18841.937999999998', precision=53), Pow(Symbol('R', positive=True), Integer(-1)))"
+ },
+ "readable": {
+  "PySR \"best\"": "2.29e+4/(R + tau)",
+  "PySR \"score\"": "1.884e+4/R"
+ },
+ "pysr_kept": [
+  {
+   "complexity": 1,
+   "loss": 11668.145,
+   "score": 0.0,
+   "equation": "141.171"
+  },
+  {
+   "complexity": 3,
+   "loss": 4759.6904,
+   "score": 0.44833992748412155,
+   "equation": "18841.938 / R"
+  },
+  {
+   "complexity": 5,
+   "loss": 3753.009,
+   "score": 0.11881235293982759,
+   "equation": "22898.256 / (R + tau)"
+  },
+  {
+   "complexity": 7,
+   "loss": 3428.2861,
+   "score": 0.045248730617644985,
+   "equation": "(gap * 634.7216) / (tau + R)"
+  },
+  {
+   "complexity": 9,
+   "loss": 3032.3271,
+   "score": 0.06136505622464185,
+   "equation": "(((-203.20306 / tau) - gap) * -353.47995) / R"
+  },
+  {
+   "complexity": 11,
+   "loss": 2796.9417,
+   "score": 0.04040188715277691,
+   "equation": "((-218.59035 / tau) - gap) * (-411.80298 / (R - -10.787968))"
+  },
+  {
+   "complexity": 13,
+   "loss": 2774.8657,
+   "score": 0.0039621103052788625,
+   "equation": "(((233.8836 / (-0.6712054 - tau)) - gap) * -411.80298) / (R - -10.787968)"
+  },
+  {
+   "complexity": 14,
+   "loss": 2757.5942,
+   "score": 0.006243716690764296,
+   "equation": "(((233.8836 / (sin(tau) - tau)) - gap) * -411.80298) / (R - -10.787968)"
+  },
+  {
+   "complexity": 16,
+   "loss": 2708.483,
+   "score": 0.00898496669040162,
+   "equation": "(((233.8836 / ((cos(tau) - tau) + -0.8557159)) - gap) * -411.80298) / (R - -10.787968)"
+  },
+  {
+   "complexity": 21,
+   "loss": 2665.023,
+   "score": 0.0032352023169456103,
+   "equation": "(((393.72134 / tau) - 135.9408) * -1.8555912) * ((((6160.6504 / tau) / tau) + (gap + gap)) / (R + 11.659365))"
+  },
+  {
+   "complexity": 22,
+   "loss": 2654.1873,
+   "score": 0.004074181834261989,
+   "equation": "((gap + (((5586.2114 / tau) / tau) + gap)) * (((371.8798 / tau) - 129.65065) * -1.9001777)) / (R + sqrt(gap))"
+  },
+  {
+   "complexity": 24,
+   "loss": 2643.0347,
+   "score": 0.0021053707921400914,
+   "equation": "(((371.8798 / tau) - 130.13298) / (sqrt(gap + gap) + R)) * (-1.9407561 * (gap + (gap + ((5586.2114 / tau) / tau))))"
+  },
+  {
+   "complexity": 27,
+   "loss": 2637.897,
+   "score": 0.0006485852513398706,
+   "equation": "((-1.9001777 / (sqrt(gap) + R)) * (gap + (gap + ((5586.2114 / tau) / tau)))) * (((371.8798 / tau) - 129.65065) + sin(exp(sqrt(gap))))"
+  },
+  {
+   "complexity": 29,
+   "loss": 2637.7542,
+   "score": 2.7067748534075476e-05,
+   "equation": "((((5586.2114 / tau) / tau) + (gap + gap)) * -1.9001777) * (((371.8798 / tau) - 129.65065) / (sqrt(gap) + (R + cos((gap + gap) + gap))))"
+  },
+  {
+   "complexity": 31,
+   "loss": 2635.5342,
+   "score": 0.00042098970561739105,
+   "equation": "(((((5586.2114 / tau) / tau) + (gap + gap)) * -1.9001777) * (((371.8798 / tau) - 129.65065) / (sqrt(gap) + (R + cos((gap + gap) + gap))))) - -0.6765896"
+  },
+  {
+   "complexity": 33,
+   "loss": 2634.4465,
+   "score": 0.00020639544570726586,
+   "equation": "0.5226492 + ((((((5586.2114 / tau) / tau) + (gap + gap)) * -1.9001777) * (((371.8798 / tau) - 129.65065) / (sqrt(gap) + (R + cos((gap + gap) + gap))))) - -0.6765896)"
+  },
+  {
+   "complexity": 34,
+   "loss": 2628.3162,
+   "score": 0.0023296899830427026,
+   "equation": "((((5586.2114 / tau) / tau) + (gap + gap)) * -1.9001777) * (((371.8798 / tau) - 129.65065) / ((sqrt(gap) + (R + cos(gap + gap))) + cos((gap + gap) + gap)))"
+  },
+  {
+   "complexity": 38,
+   "loss": 2625.1729,
+   "score": 0.0002991631195251309,
+   "equation": "(((((5586.2114 / tau) / tau) + (gap + gap)) * -1.9001777) * (((371.8798 / tau) - 129.65065) / (sqrt(gap) + ((R + cos((gap + gap) + gap)) + cos((gap + gap) + gap))))) - -0.6765896"
+  }
+ ]
+}

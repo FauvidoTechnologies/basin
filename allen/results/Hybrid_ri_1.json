@@ -1,0 +1,13 @@
+{
+ "method": "Hybrid",
+ "rcol": "ri",
+ "fold": "1",
+ "n_train": 1869,
+ "seconds": 21.07,
+ "formulas": {
+  "Hybrid": "Mul(Float('396.50012398887395', precision=53), Pow(Symbol('R', positive=True), Integer(-1)), Symbol('gap', positive=True))"
+ },
+ "readable": {
+  "Hybrid": "396.5*gap/R"
+ }
+}

@@ -1,0 +1,136 @@
+{
+ "method": "PySR",
+ "fit": 3,
+ "n_train": 2000,
+ "seconds": 68.51,
+ "formulas": {
+  "PySR \"best\"": "Mul(Pow(Symbol('d', positive=True), Integer(2)), Add(Mul(Pow(Symbol('L', positive=True), Rational(1, 2)), Symbol('d', positive=True), Add(Mul(Integer(-1), Symbol('d', positive=True), sin(Add(Mul(Symbol('L', positive=True), Symbol('d', positive=True)), Mul(Integer(-1), Symbol('d', positive=True))))), Symbol('d', positive=True), Float('1.6257809000000001', precision=53))), Mul(Float('0.77139849999999999', precision=53), Symbol('L', positive=True))))",
+  "PySR \"score\"": "Mul(Float('0.50267410000000001', precision=53), Symbol('S', positive=True))"
+ },
+ "readable": {
+  "PySR \"best\"": "d**2*(L**0.5*d*(-d*sin(L*d - d) + d + 1.626) + 0.7714*L)",
+  "PySR \"score\"": "0.5027*S"
+ },
+ "pysr_kept": [
+  {
+   "complexity": 1,
+   "loss": 579384400.0,
+   "score": 0.0,
+   "equation": "L"
+  },
+  {
+   "complexity": 3,
+   "loss": 210310480.0,
+   "score": 0.5066906227650667,
+   "equation": "S_ * 0.5026741"
+  },
+  {
+   "complexity": 5,
+   "loss": 111533864.0,
+   "score": 0.3171283286224462,
+   "equation": "(S_ * d) * 0.27163956"
+  },
+  {
+   "complexity": 7,
+   "loss": 48644644.0,
+   "score": 0.4148932738596199,
+   "equation": "((S_ * d) * 0.12604517) * d"
+  },
+  {
+   "complexity": 9,
+   "loss": 43786000.0,
+   "score": 0.05261378924440761,
+   "equation": "(((S_ * d) / 3.214358) / 2.6529489) * d"
+  },
+  {
+   "complexity": 10,
+   "loss": 36861536.0,
+   "score": 0.17214550902340703,
+   "equation": "((L + exp(d)) * 0.7451499) * (d * d)"
+  },
+  {
+   "complexity": 12,
+   "loss": 24775560.0,
+   "score": 0.19865546958513075,
+   "equation": "(d * 0.7701102) * (d * ((exp(d) * 0.7701102) + L))"
+  },
+  {
+   "complexity": 14,
+   "loss": 9263010.0,
+   "score": 0.491914316778156,
+   "equation": "((L * 0.7713985) + (d * sqrt(S_ * d))) * (d * d)"
+  },
+  {
+   "complexity": 18,
+   "loss": 8470124.0,
+   "score": 0.022370975343203585,
+   "equation": "d * (((((sqrt(d * L) - 6.860573) * (d * d)) + L) * 0.7956943) * d)"
+  },
+  {
+   "complexity": 20,
+   "loss": 8444661.0,
+   "score": 0.001505370552108239,
+   "equation": "((L + (((sqrt(d * L) - 6.860573) * d) * (d + 0.22157043))) * 0.7956943) * (d * d)"
+  },
+  {
+   "complexity": 21,
+   "loss": 8321163.5,
+   "score": 0.014732318552241682,
+   "equation": "(((L + ((d * (d + cos(S_))) * (sqrt(d * L) - 6.860573))) * d) * 0.7956943) * d"
+  },
+  {
+   "complexity": 22,
+   "loss": 8260408.0,
+   "score": 0.007328107819758029,
+   "equation": "(d * d) * ((L * 0.7701102) + ((sqrt(d * L) + ((-2.8012912 - d) - d)) * (d * d)))"
+  },
+  {
+   "complexity": 23,
+   "loss": 7710191.5,
+   "score": 0.06893095584645793,
+   "equation": "((L * 0.7713985) + (sqrt(L) * ((d - (sin((d * L) - d) * d)) * d))) * (d * d)"
+  },
+  {
+   "complexity": 25,
+   "loss": 5226164.5,
+   "score": 0.19443269065370702,
+   "equation": "(((L * 0.7713985) + ((1.6257809 + (d - (sin((d * L) - d) * d))) * (d * sqrt(L)))) * d) * d"
+  },
+  {
+   "complexity": 26,
+   "loss": 5142623.0,
+   "score": 0.016114383245663444,
+   "equation": "((L * 0.7713985) + ((d * (d + (sqrt(d) - (d * sin((d * L) - d))))) * sqrt(L))) * (d * d)"
+  },
+  {
+   "complexity": 27,
+   "loss": 5004012.5,
+   "score": 0.027323169983454704,
+   "equation": "(((L * 0.7713985) + ((0.32774264 + d) * ((1.6257809 + (d - (sin((d * L) - d) * d))) * sqrt(L)))) * d) * d"
+  },
+  {
+   "complexity": 28,
+   "loss": 4904039.0,
+   "score": 0.020180939309175357,
+   "equation": "((L * 0.7713985) + (d * ((1.6257809 + (d - (sin((d * L) - d) * (sin(L) + d)))) * sqrt(L)))) * (d * d)"
+  },
+  {
+   "complexity": 29,
+   "loss": 4660140.0,
+   "score": 0.051013660689238016,
+   "equation": "((L * 0.7713985) + ((1.6257809 + (d - (sin((d * L) - d) * (sin(sqrt(L)) + d)))) * (d * sqrt(L)))) * (d * d)"
+  },
+  {
+   "complexity": 30,
+   "loss": 4629104.5,
+   "score": 0.006682053740200029,
+   "equation": "(d * (((sqrt(L) * ((d - ((sin((L * d) - d) * d) + sin(L + d))) + 1.6257809)) * d) + (L * 0.7713985))) * d"
+  },
+  {
+   "complexity": 31,
+   "loss": 4568454.0,
+   "score": 0.013188582409105329,
+   "equation": "(d * d) * ((L * 0.7713985) + (sqrt(L) * (((d - (sin((d * L) - d) * (d + sin(sqrt(L) + 0.7713985)))) + 1.6257809) * d)))"
+  }
+ ]
+}

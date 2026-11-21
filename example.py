@@ -8,7 +8,7 @@ from itertools import product
 import numpy as np
 import sympy as sp
 
-from hybrid import discover
+from basin import discover
 
 names = ["M1", "T1", "M2", "T2"]
 levels = [[1.0, 2.0, 3.0], [10.0, 50.0, 90.0], [1.0, 2.0, 3.0], [20.0, 60.0, 100.0]]

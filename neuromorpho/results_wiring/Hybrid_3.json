@@ -1,0 +1,12 @@
+{
+ "method": "Hybrid",
+ "fit": 3,
+ "n_train": 2000,
+ "seconds": 66.81,
+ "formulas": {
+  "Hybrid": "Mul(Pow(Add(Mul(Float('0.00011317480469634889', precision=53), Pow(Symbol('n', positive=True), Integer(2))), Float('1.0', precision=53)), Integer(-1)), Add(Mul(Float('0.18732456228471606', precision=53), Symbol('H', positive=True), Symbol('n', positive=True)), Mul(Float('3.8096439911994278', precision=53), Symbol('W', positive=True))))"
+ },
+ "readable": {
+  "Hybrid": "(0.1873*H*n + 3.81*W)/(0.0001132*n**2 + 1.0)"
+ }
+}

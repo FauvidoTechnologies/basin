@@ -1,0 +1,1 @@
+PySR 4 81.19 s {'PySR "best"': 'S*(d/(3.475 - cos(L)) + 105.4*d/L)', 'PySR "score"': '0.3401*S*d'}

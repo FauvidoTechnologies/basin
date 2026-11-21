@@ -1,0 +1,1 @@
+PySR 0 103.8 s {'PySR "best"': '0.06773*D*n + 12.14*W', 'PySR "score"': '24.62*W'}

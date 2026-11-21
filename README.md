@@ -1,4 +1,15 @@
-# Hybrid: BACON proposes terms, regression decides
+# basin: BACON proposes terms, regression decides
+
+```bash
+pip install basin-sr
+```
+
+```python
+import basin
+law = basin.discover(X, y, ["M1", "T1", "M2", "T2"])   # a sympy expression
+```
+
+In the text below, "the hybrid" means this method.
 
 A law finder for tables of measurements: given inputs `x₁ … xₙ` and one measured output
 `y`, it returns a formula `y = N(x)/D(x)`. It combines ideas from BACON (Langley's
@@ -27,22 +38,41 @@ on its own.
   - II.11.28 at 1% noise: `(0.6733*alpha*n + 1.0)/(-0.3292*alpha*n + 1.0)`
 - Any change from here on should be a named switch, with the benchmark version as the
   default, so the results below stay reproducible.
+- **Since then:** two such switches (`POWER_DENOMINATORS`, `POWER_FREE`, see the
+  settings table), and the file moved to `basin/core.py` for the package. Black's law in
+  `example.py` gives the same formula as the original.
 
 ## Use
 
 ```bash
-pip install -r requirements.txt      # Python 3.10; the versions used for every result below
+pip install basin-sr                 # the library (imported as `basin`)
+pip install -r requirements.txt      # or: the exact versions used for every result below (Python 3.10)
 python example.py                    # Black's law from 81 noisy rows, about 10 s
 ```
 
 ```python
-import numpy as np, sympy as sp
-from hybrid import discover
+import basin
 
 # X: one row per measurement, one column per input; y: the measured output
-law = discover(X, y, [sp.Symbol(v, positive=True) for v in ["M1", "T1", "M2", "T2"]])
-law, info = discover(X, y, symbols, details=True)   # also: proposed powers, CV error
+law = basin.discover(X, y, ["M1", "T1", "M2", "T2"])  # names, sympy Symbols, or None (x0, x1, ...)
+law, info = basin.discover(X, y, names, details=True)  # also: proposed powers, CV error
+
+# the side-run switches (defaults = the benchmark version), changed for a block only:
+with basin.settings(POWER_FREE=True):
+    law = basin.discover(X, y, names)
 ```
+
+`basin.core` is the method itself (formerly `hybrid.py`). The top-level `hybrid.py` is a
+shim that makes `import hybrid` return `basin.core`, so the runners in `allen/` and
+`neuromorpho/` work as before.
+
+### Releasing (maintainers)
+
+`make new-release` builds with poetry, runs `twine check`, and uploads with the token
+`pypy_api_token` from `./.env` (git-ignored; see `.env.example`). Twine gets an empty
+config file and an explicit upload URL, so `~/.pypirc` and other projects' credentials
+are never used. `make test-release` uploads to TestPyPI with `testpypi_api_token`. Raise
+the version in both `basin/version.py` and `pyproject.toml` (the build checks they match).
 
 ## How it works
 
@@ -77,6 +107,11 @@ Given the table (every step uses all rows):
 | `POWER_KEEP` | 2 | at most 2 proposed fractions per input |
 | `FOLDS`, `REPEATS`, `CV_SEED` | 5, 5, 0 | cross-validation (leave-one-out below 10 rows) |
 | `CV_FLOOR` | 1e-10 | errors closer than this count as equal |
+| `POWER_DENOMINATORS` | (1, 2, 3) | side-run switch: step 1's fractions k/d use these d |
+| `POWER_FREE`, `POWER_FREE_DIGITS` | False, 2 | side-run switch: if no fraction fits, propose the estimate rounded to 2 decimals |
+
+The two side-run switches were added after every benchmark below. Their defaults give
+identical results; see `findings/hybrid_power_switches.md`.
 
 **What it cannot write:** `sin`, `cos`, `exp`, `log`; powers with a denominator above 3 or
 above 3 in size; laws with more than 5 free coefficients; products of more than two
@@ -468,6 +503,51 @@ data for every method, run for run. BACON is the original at its code defaults.
   for Test 15, 13 against 55 at about 100 rows), and about a quarter to a third at about
   30 rows (12 against 43).
 
+### Real neuroscience data (exploratory; full write-ups in `findings/`)
+
+- **Three measured datasets,** run on 2026-11-16 with the same method settings as above
+  (PySR: the Feynman operators, both `"best"` and `"score"` from one search).
+- **Not a pre-registered test.** The rules were set during the session, not written down
+  before running.
+- **Scoring:** every number is a held-out error. Each method's formula is evaluated on
+  cells or neurons it did not fit on, and compared with the measured value.
+- **Fits:**
+  - Allen: 5 splits of 80/20 over 2,336 cells.
+  - NeuroMorpho: 5 fits of 2,000 neurons each, scored on the same 50,000 held-out neurons.
+- **Hybrid-free** is the hybrid with the side-run switch `POWER_FREE = True` (see the
+  settings table). It was added *after* the benchmark hybrid failed the wiring test, so
+  its wiring result is a development check, like Tests 13–14, not an independent test.
+
+**Held-out median error / RMS log error** (lower is better):
+
+| dataset | Hybrid | Hybrid-free | PySR "best" | PySR "score" | PySINDy | best simple reference |
+|---|---|---|---|---|---|---|
+| Allen: rheobase ← R, τ, gap | 29.0% / 0.486 | 28.8% / 0.483 | 26.6% / **0.443** | 31.9% / 0.481 | **24.6%** / 0.530 | 25.6% / 0.405 (`515·gap/R`) |
+| NeuroMorpho: volume ← S, L, d | **7.8% / 0.232** | **7.8% / 0.232** | 30.1% / 0.531 | 36.9% / 0.500 | 22.9% / 1.371 | 1.5% / 0.290 (`S·d/4`) |
+| NeuroMorpho: length ← W, H, D, n | 30.9% / 0.592 | **22.2% / 0.383** | 38.7% / 0.561 | 59.4% / 1.066 | 30.3% / 1.555 | 19.3% / 0.339 (power law, log fit) |
+
+**Readable law found** (fits giving it):
+
+| dataset | Hybrid | Hybrid-free | PySR | PySINDy |
+|---|---|---|---|---|
+| Allen | `gap/R` 6 of 6 | `gap/R` 3 of 6, `gap^0.8/R` 3 | `gap/R` 0 of 6 | about 300 terms |
+| Volume | cylinder law 5 of 5 (`S²/L`) | the same | `c·S·d` 3 of 10 picks | 195 terms |
+| Wiring | none (sums of integer terms) | the power law in 5 of 5, plus small extra terms | none | 617 terms |
+
+- **Where the hybrid is clearly ahead: the volume and wiring tests.** Its held-out error is
+  far below PySR's and PySINDy's on volume, and below both on wiring with
+  `POWER_FREE`. It also finds a readable law in every fit, where PySINDy keeps hundreds of
+  terms and PySR changes its answer from fit to fit.
+- **Allen: no clear winner on error.**
+  - PySINDy has the lowest median error and PySR "best" the lowest log error.
+  - The hybrid is the only method that finds the textbook form `gap/R`, but its fitting
+    rule (relative error) pulls the coefficient to 393, against 515 for a log-scale fit.
+- **No method beats a simple reference,** except where that reference is the textbook
+  law with the wrong constant.
+- **`POWER_FREE` is not the default.** It changes the Allen answer to `gap^0.8/R` on
+  half the splits. It has not been run on the Feynman benchmark (Tests 15–17), where
+  free powers could add wrong candidates.
+
 ## Ideas for testing the hybrid against PySR
 
 As in bacon-vs-pysindy: one test at a time, with rules written down before running and
@@ -551,7 +631,10 @@ parallel jobs, about 1 hour per 1,000 hybrid runs.
 
 | file | what it is |
 |---|---|
-| `hybrid.py` | the method (copy of bacon-vs-pysindy's, see above) |
+| `basin/core.py` | the method (copy of bacon-vs-pysindy's `hybrid.py`, see above) |
+| `basin/__init__.py` | the library API: `discover` (accepts names), `settings` |
+| `hybrid.py` | shim: `import hybrid` gives `basin.core` |
+| `tests/`, `pyproject.toml`, `Makefile` | tests, packaging, release targets |
 | `example.py` | small example: Black's law from a noisy 81-row grid |
 | `requirements.txt` | package versions used for every result above |
 | `benchmarks/test15_feynman.csv` | Test 15, every law × method × noise level: runs, exact (fixed and original check), right terms, median prediction error, median seconds |
@@ -561,6 +644,10 @@ parallel jobs, about 1 hour per 1,000 hybrid runs.
 | `benchmarks/test17_feynman.csv` | Test 17, every grid × law × noise level for the hybrid, PySR with "best" (Test 16) and PySR with "score": runs, exact (fixed and original check), right terms, median prediction error |
 | `benchmarks/test17_pysr_score_answers.csv` | every PySR answer with "score" in Test 17 (4 significant digits), with its verdict |
 | `benchmarks/tests12_14_bacon_laws.csv` | Tests 12–14, BACON's five laws, every method |
+| `findings/` | write-ups of the real-data runs (Allen, NeuroMorpho volume and wiring, the power switches) |
+| `allen/run_allen.py`, `allen/results/` | Allen Cell Types runner, per-fit answers and `allen_scores.csv` |
+| `neuromorpho/run_neuromorpho.py`, `neuromorpho/run_wiring.py`, `neuromorpho/results*/` | NeuroMorpho runners (volume, wiring), per-fit answers and scores |
+| `data/allen/`, `data/neuromorpho/` | not in git (197 MB): the raw downloads (Allen API JSON, NeuroMorpho morphometry pages and merged CSV) |
 
 ## Per-law results, Test 15: hybrid / PySR
 

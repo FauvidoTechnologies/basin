@@ -1,0 +1,12 @@
+{
+ "method": "Hybrid-den6",
+ "fit": 4,
+ "n_train": 2000,
+ "seconds": 68.44,
+ "formulas": {
+  "Hybrid-den6": "Mul(Float('0.085919433350434296', precision=53), Pow(Symbol('L', positive=True), Integer(-1)), Pow(Symbol('S', positive=True), Integer(2)))"
+ },
+ "readable": {
+  "Hybrid-den6": "0.08592*S**2/L"
+ }
+}

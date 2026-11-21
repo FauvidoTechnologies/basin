@@ -1,0 +1,1 @@
+PySR input_resistance_mohm 4 130.93 s {'PySR "best"': '2.631e+5/(R*tau)', 'PySR "score"': '2.631e+5/(R*tau)'}

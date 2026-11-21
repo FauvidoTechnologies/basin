@@ -1,0 +1,13 @@
+{
+ "method": "Hybrid",
+ "rcol": "input_resistance_mohm",
+ "fold": "2",
+ "n_train": 1869,
+ "seconds": 14.94,
+ "formulas": {
+  "Hybrid": "Mul(Float('1.0', precision=53), Pow(Symbol('R', positive=True), Integer(-1)), Pow(Symbol('tau', positive=True), Integer(-1)), Add(Mul(Float('186.51315380713328', precision=53), Symbol('gap', positive=True), Symbol('tau', positive=True)), Mul(Float('4435.8076422775875', precision=53), Symbol('gap', positive=True))))"
+ },
+ "readable": {
+  "Hybrid": "1.0*(186.5*gap*tau + 4436.0*gap)/(R*tau)"
+ }
+}

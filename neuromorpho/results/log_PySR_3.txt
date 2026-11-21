@@ -1,0 +1,1 @@
+PySR 3 68.51 s {'PySR "best"': 'd**2*(L**0.5*d*(-d*sin(L*d - d) + d + 1.626) + 0.7714*L)', 'PySR "score"': '0.5027*S'}

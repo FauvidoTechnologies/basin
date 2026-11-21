@@ -1,0 +1,13 @@
+{
+ "method": "Hybrid-den6",
+ "rcol": "ri",
+ "fold": "2",
+ "n_train": 1869,
+ "seconds": 27.87,
+ "formulas": {
+  "Hybrid-den6": "Mul(Float('924.06977398624667', precision=53), Pow(Symbol('R', positive=True), Integer(-1)), Pow(Symbol('gap', positive=True), Rational(3, 4)))"
+ },
+ "readable": {
+  "Hybrid-den6": "924.1*gap**0.75/R"
+ }
+}

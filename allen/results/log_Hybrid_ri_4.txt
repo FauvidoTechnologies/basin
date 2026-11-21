@@ -1,0 +1,1 @@
+Hybrid ri 4 21.4 s {'Hybrid': '388.6*gap/R'}

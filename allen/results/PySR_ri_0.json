@@ -1,0 +1,125 @@
+{
+ "method": "PySR",
+ "rcol": "ri",
+ "fold": "0",
+ "n_train": 1868,
+ "seconds": 140.48,
+ "formulas": {
+  "PySR \"best\"": "Mul(Float('66807.809999999998', precision=53), Pow(Symbol('R', positive=True), Integer(-1)), Pow(Symbol('tau', positive=True), Rational(-1, 2)))",
+  "PySR \"score\"": "Mul(Float('19035.916000000001', precision=53), Pow(Symbol('R', positive=True), Integer(-1)))"
+ },
+ "readable": {
+  "PySR \"best\"": "6.681e+4/(R*tau**0.5)",
+  "PySR \"score\"": "1.904e+4/R"
+ },
+ "pysr_kept": [
+  {
+   "complexity": 1,
+   "loss": 11733.336,
+   "score": 0.0,
+   "equation": "141.32524"
+  },
+  {
+   "complexity": 3,
+   "loss": 4606.771,
+   "score": 0.46745342172897675,
+   "equation": "19035.916 / R"
+  },
+  {
+   "complexity": 5,
+   "loss": 3733.176,
+   "score": 0.10513391593146425,
+   "equation": "23133.98 / (R + tau)"
+  },
+  {
+   "complexity": 6,
+   "loss": 3325.4788,
+   "score": 0.11564568214694851,
+   "equation": "(66807.81 / R) / sqrt(tau)"
+  },
+  {
+   "complexity": 8,
+   "loss": 3035.6406,
+   "score": 0.04559559533073455,
+   "equation": "gap + ((55717.457 / R) / sqrt(tau))"
+  },
+  {
+   "complexity": 9,
+   "loss": 2960.535,
+   "score": 0.025052477832223374,
+   "equation": "((gap - (-174.8688 / tau)) * 391.81503) / R"
+  },
+  {
+   "complexity": 11,
+   "loss": 2837.21,
+   "score": 0.02127441015290843,
+   "equation": "((gap - (-199.95581 / tau)) / (R - -15.561063)) * 448.58408"
+  },
+  {
+   "complexity": 12,
+   "loss": 2830.6907,
+   "score": 0.0023004294605929432,
+   "equation": "(gap - (-212.9759 / tau)) * (396.1373 / (R + sqrt(gap)))"
+  },
+  {
+   "complexity": 13,
+   "loss": 2809.57,
+   "score": 0.007489298755594094,
+   "equation": "(465.474 * (gap - (-203.00055 / tau))) / (R - (gap * -0.49433136))"
+  },
+  {
+   "complexity": 15,
+   "loss": 2783.965,
+   "score": 0.004577638085524812,
+   "equation": "((465.474 * (gap - (-203.00055 / tau))) / (R - (gap * -0.49433136))) - 2.8001547"
+  },
+  {
+   "complexity": 16,
+   "loss": 2774.33,
+   "score": 0.0034668939487873876,
+   "equation": "((465.474 / (R - (gap * -0.49433136))) * (gap - (-203.00055 / tau))) - exp(1.6713846)"
+  },
+  {
+   "complexity": 17,
+   "loss": 2747.41,
+   "score": 0.009750626898029167,
+   "equation": "((gap + (-255.92857 / (cos(tau) - tau))) * 366.9281) / ((gap / sqrt(tau)) + R)"
+  },
+  {
+   "complexity": 18,
+   "loss": 2700.438,
+   "score": 0.01724466763134626,
+   "equation": "(gap - (-274.57947 / (tau - cos(tau)))) * (374.29968 / (R + (gap / (tau / 3.1376634))))"
+  },
+  {
+   "complexity": 20,
+   "loss": 2700.3142,
+   "score": 2.292273287820315e-05,
+   "equation": "(-0.30740598 + (gap - (-274.57947 / (tau - cos(tau))))) * (374.29968 / (R + (gap / (tau / 3.1376634))))"
+  },
+  {
+   "complexity": 21,
+   "loss": 2688.1118,
+   "score": 0.004529122552273652,
+   "equation": "((gap + (-255.92857 / (cos(tau) - tau))) * 366.9281) / ((gap / sqrt(tau)) + ((R / 1.026325) / 1.026325))"
+  },
+  {
+   "complexity": 26,
+   "loss": 2683.053,
+   "score": 0.0003767377605571321,
+   "equation": "((gap + (-255.92857 / (cos(tau) - tau))) / ((gap / sqrt(tau)) + (cos(R / 1.026325) + ((R / 1.026325) / 1.026325)))) * 366.9281"
+  },
+  {
+   "complexity": 27,
+   "loss": 2676.5547,
+   "score": 0.0024249174745711714,
+   "equation": "((gap + (-255.92857 / (cos(tau) - tau))) * (366.9281 - (cos(tau) - tau))) / ((((cos(tau) / -0.21366233) + gap) / sqrt(tau)) + R)"
+  },
+  {
+   "complexity": 30,
+   "loss": 2668.2297,
+   "score": 0.001038396326760275,
+   "equation": "(((gap + (-255.92857 / (cos(sqrt(-255.92857 / (cos(sqrt(gap)) - tau))) - tau))) * 366.9281) - -0.79601824) / (((R / 1.026325) / 1.026325) + (gap / sqrt(tau)))"
+  }
+ ]
+}

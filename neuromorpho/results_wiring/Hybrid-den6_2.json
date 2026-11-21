@@ -1,0 +1,12 @@
+{
+ "method": "Hybrid-den6",
+ "fit": 2,
+ "n_train": 2000,
+ "seconds": 95.5,
+ "formulas": {
+  "Hybrid-den6": "Mul(Pow(Add(Float('1.0', precision=53), Mul(Integer(-1), Float('0.1695165484245777', precision=53), Pow(Symbol('D', positive=True), Rational(1, 6)))), Integer(-1)), Add(Mul(Float('3.1159611327423522', precision=53), Pow(Symbol('D', positive=True), Rational(1, 6)), Pow(Symbol('H', positive=True), Rational(3, 5)), Pow(Symbol('n', positive=True), Rational(2, 5))), Mul(Float('2.0319482678884282', precision=53), Symbol('W', positive=True))))"
+ },
+ "readable": {
+  "Hybrid-den6": "(3.116*D**0.1667*H**0.6*n**0.4 + 2.032*W)/(1.0 - 0.1695*D**0.1667)"
+ }
+}

@@ -1,0 +1,1 @@
+Hybrid-free ri all 35.98 s {'Hybrid-free': '393.1*gap/R'}

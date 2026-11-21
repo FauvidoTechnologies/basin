@@ -1,0 +1,1 @@
+Hybrid-den6 4 68.44 s {'Hybrid-den6': '0.08592*S**2/L'}

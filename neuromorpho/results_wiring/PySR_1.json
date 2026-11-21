@@ -1,0 +1,112 @@
+{
+ "method": "PySR",
+ "fit": 1,
+ "n_train": 2000,
+ "seconds": 112.83,
+ "formulas": {
+  "PySR \"best\"": "Add(Mul(Float('15.332383', precision=53), Symbol('D', positive=True)), Mul(Integer(2), Pow(Symbol('W', positive=True), Rational(1, 2)), Symbol('n', positive=True)))",
+  "PySR \"score\"": "Mul(Float('17.721474000000001', precision=53), Symbol('D', positive=True))"
+ },
+ "readable": {
+  "PySR \"best\"": "15.33*D + 2.0*W**0.5*n",
+  "PySR \"score\"": "17.72*D"
+ },
+ "pysr_kept": [
+  {
+   "complexity": 1,
+   "loss": 129208320.0,
+   "score": 0.0,
+   "equation": "H"
+  },
+  {
+   "complexity": 3,
+   "loss": 32116786.0,
+   "score": 0.6960235818772409,
+   "equation": "D * 17.721474"
+  },
+  {
+   "complexity": 5,
+   "loss": 25039760.0,
+   "score": 0.12445693014203493,
+   "equation": "(D + W) * 12.030794"
+  },
+  {
+   "complexity": 7,
+   "loss": 22504108.0,
+   "score": 0.0533835455992848,
+   "equation": "((D + W) * 9.687488) + H"
+  },
+  {
+   "complexity": 8,
+   "loss": 18868912.0,
+   "score": 0.1761821702623236,
+   "equation": "(sqrt(W) * n) + (D * 16.031956)"
+  },
+  {
+   "complexity": 10,
+   "loss": 15273269.0,
+   "score": 0.10570576192330247,
+   "equation": "((n + n) * sqrt(W)) + (D * 15.332383)"
+  },
+  {
+   "complexity": 12,
+   "loss": 13975779.0,
+   "score": 0.044389208164589314,
+   "equation": "((n + n) * sqrt(W)) + ((11.38746 * D) + H)"
+  },
+  {
+   "complexity": 14,
+   "loss": 13353202.0,
+   "score": 0.022784776805342036,
+   "equation": "((n + n) * sqrt(W)) + (W + ((11.38746 * D) + H))"
+  },
+  {
+   "complexity": 16,
+   "loss": 13162355.0,
+   "score": 0.007197672509500284,
+   "equation": "(W + H) + (W + (((n + n) * sqrt(W)) + (11.38746 * D)))"
+  },
+  {
+   "complexity": 21,
+   "loss": 13108713.0,
+   "score": 0.0008167475269533809,
+   "equation": "H + (((((n * W) / ((((D / n) / n) * 444.8383) + n)) + D) + n) * 11.525406)"
+  },
+  {
+   "complexity": 23,
+   "loss": 13011851.0,
+   "score": 0.0037082830215470442,
+   "equation": "(H + (((((n * W) / ((((W / n) * 444.8383) / n) + n)) + D) + n) * 11.525406)) + W"
+  },
+  {
+   "complexity": 25,
+   "loss": 12940330.0,
+   "score": 0.0027558832556184116,
+   "equation": "H + ((((((n + n) * n) * ((W / ((W / 11.525406) + n)) / (11.525406 + n))) + D) + n) * 11.525406)"
+  },
+  {
+   "complexity": 28,
+   "loss": 12909273.0,
+   "score": 0.0008009669095863208,
+   "equation": "(W + (((D + n) + (sqrt(W) + ((n * W) / (((444.8383 / n) * ((D + W) / n)) + n)))) * 11.525406)) + H"
+  },
+  {
+   "complexity": 31,
+   "loss": 12830360.0,
+   "score": 0.002043884289050741,
+   "equation": "W + (H + ((((n * ((n * (W / ((((D / n) / n) * 444.8383) + n))) / ((D / n) + n))) + D) + n) * 11.525406))"
+  },
+  {
+   "complexity": 33,
+   "loss": 12774043.0,
+   "score": 0.002199508061853061,
+   "equation": "n + (W + (H + (((n * ((n * (W / ((((D / n) / n) * 444.8383) + n))) / ((D / n) + n))) + (D + n)) * 11.525406)))"
+  },
+  {
+   "complexity": 36,
+   "loss": 12247180.0,
+   "score": 0.014039838312758181,
+   "equation": "(H + D) + (((n / (sqrt(((n * W) / ((D / n) + n)) + n) + n)) * ((((n * W) / ((D / n) + n)) + n) + D)) * 14.443629)"
+  }
+ ]
+}

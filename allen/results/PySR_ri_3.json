@@ -1,0 +1,131 @@
+{
+ "method": "PySR",
+ "rcol": "ri",
+ "fold": "3",
+ "n_train": 1869,
+ "seconds": 138.53,
+ "formulas": {
+  "PySR \"best\"": "Add(Mul(Float('591.79584', precision=53), Pow(Symbol('tau', positive=True), Integer(-1))), Mul(Float('415.91476', precision=53), Pow(Symbol('R', positive=True), Integer(-1)), Symbol('gap', positive=True)))",
+  "PySR \"score\"": "Mul(Float('19333.27', precision=53), Pow(Symbol('R', positive=True), Integer(-1)))"
+ },
+ "readable": {
+  "PySR \"best\"": "591.8/tau + 415.9*gap/R",
+  "PySR \"score\"": "1.933e+4/R"
+ },
+ "pysr_kept": [
+  {
+   "complexity": 1,
+   "loss": 11814.892,
+   "score": 0.0,
+   "equation": "141.24887"
+  },
+  {
+   "complexity": 3,
+   "loss": 4557.576,
+   "score": 0.47628493321689475,
+   "equation": "19333.27 / R"
+  },
+  {
+   "complexity": 5,
+   "loss": 3794.7625,
+   "score": 0.09158453834835083,
+   "equation": "556.38385 / (R / gap)"
+  },
+  {
+   "complexity": 7,
+   "loss": 3673.0413,
+   "score": 0.01630090777759625,
+   "equation": "(568.6914 - tau) / (R / gap)"
+  },
+  {
+   "complexity": 9,
+   "loss": 3055.4143,
+   "score": 0.09205240690602666,
+   "equation": "(415.91476 / (R / gap)) + (591.79584 / tau)"
+  },
+  {
+   "complexity": 11,
+   "loss": 2857.3552,
+   "score": 0.03350937771985823,
+   "equation": "((730.2331 / tau) + (486.32016 / (R / gap))) - gap"
+  },
+  {
+   "complexity": 12,
+   "loss": 2749.9111,
+   "score": 0.038327857853868275,
+   "equation": "(8338.472 / (tau * sqrt(R))) + (362.27023 / (R / gap))"
+  },
+  {
+   "complexity": 14,
+   "loss": 2738.9023,
+   "score": 0.002005682095499604,
+   "equation": "((372.0413 / (R / gap)) - 5.410524) + (8439.147 / (tau * sqrt(R)))"
+  },
+  {
+   "complexity": 16,
+   "loss": 2736.6257,
+   "score": 0.0004157772786818192,
+   "equation": "((8765.847 / (sqrt(R) * tau)) + (333.8228 / (R / (gap + 6.927849)))) + -15.227461"
+  },
+  {
+   "complexity": 17,
+   "loss": 2733.2642,
+   "score": 0.0012290925355466118,
+   "equation": "(367.72513 / (R / gap)) + ((8337.486 - (R * sqrt(gap))) / (tau * sqrt(R)))"
+  },
+  {
+   "complexity": 18,
+   "loss": 2721.283,
+   "score": 0.004393112326241851,
+   "equation": "(367.72513 / (R / gap)) + ((8337.486 - (R * (R / gap))) / (tau * sqrt(R)))"
+  },
+  {
+   "complexity": 20,
+   "loss": 2719.299,
+   "score": 0.00036466688452547216,
+   "equation": "((367.72513 / (R / gap)) + ((8337.486 - ((R * R) / gap)) / (tau * sqrt(R)))) - -1.3697754"
+  },
+  {
+   "complexity": 22,
+   "loss": 2687.1514,
+   "score": 0.005946226545709659,
+   "equation": "((415.91476 - R) / (R / gap)) + (1292.7345 / (591.79584 * (tau / (591.79584 - (sqrt(R) / (tau / R))))))"
+  },
+  {
+   "complexity": 24,
+   "loss": 2679.7234,
+   "score": 0.0013840465857314164,
+   "equation": "(((415.91476 - R) / (R / gap)) + (1292.7345 / (591.79584 * (tau / (591.79584 - (sqrt(R) / (tau / R))))))) - -1.7815964"
+  },
+  {
+   "complexity": 26,
+   "loss": 2676.7048,
+   "score": 0.0005635472383545303,
+   "equation": "(((tau + 415.91476) - R) / ((R - -2.206124) / gap)) + (1293.2635 / ((591.79584 / (591.79584 - (sqrt(R) / (tau / R)))) * tau))"
+  },
+  {
+   "complexity": 28,
+   "loss": 2676.5315,
+   "score": 3.237294046977382e-05,
+   "equation": "(((415.91476 + (tau - R)) / ((R - -2.206124) / gap)) + (1292.7345 / (591.79584 * (tau / (591.79584 - (sqrt(R) / (tau / R))))))) - -0.5290636"
+  },
+  {
+   "complexity": 29,
+   "loss": 2667.4548,
+   "score": 0.003396980538053536,
+   "equation": "(((tau - R) + 415.91476) / (((R - -2.206124) - cos(gap)) / gap)) + (1292.7345 / (tau * (591.79584 / (591.79584 - (sqrt(R) / (tau / R))))))"
+  },
+  {
+   "complexity": 31,
+   "loss": 2665.9016,
+   "score": 0.000291223748690325,
+   "equation": "(1292.7345 / ((591.79584 * tau) / (591.79584 - ((R / sqrt(R)) / (tau / R))))) + (((415.91476 + tau) - R) / (((R - cos(tau)) - -2.206124) / gap))"
+  },
+  {
+   "complexity": 32,
+   "loss": 2661.1313,
+   "score": 0.0017909787172905186,
+   "equation": "(1292.7345 / ((591.79584 * tau) / (591.79584 - (sqrt(R) / (tau / R))))) + ((415.91476 + (tau - R)) / ((((R - cos(gap)) - cos(gap)) - -2.206124) / gap))"
+  }
+ ]
+}

@@ -1,0 +1,125 @@
+{
+ "method": "PySR",
+ "rcol": "ri",
+ "fold": "4",
+ "n_train": 1869,
+ "seconds": 133.88,
+ "formulas": {
+  "PySR \"best\"": "Mul(Float('66092.639999999999', precision=53), Pow(Symbol('R', positive=True), Integer(-1)), Pow(Symbol('tau', positive=True), Rational(-1, 2)))",
+  "PySR \"score\"": "Mul(Float('19070.898000000001', precision=53), Pow(Symbol('R', positive=True), Integer(-1)))"
+ },
+ "readable": {
+  "PySR \"best\"": "6.609e+4/(R*tau**0.5)",
+  "PySR \"score\"": "1.907e+4/R"
+ },
+ "pysr_kept": [
+  {
+   "complexity": 1,
+   "loss": 11540.458,
+   "score": 0.0,
+   "equation": "139.23724"
+  },
+  {
+   "complexity": 3,
+   "loss": 4435.4897,
+   "score": 0.478110460765782,
+   "equation": "19070.898 / R"
+  },
+  {
+   "complexity": 5,
+   "loss": 3557.0664,
+   "score": 0.11035093329699408,
+   "equation": "23017.926 / (R + tau)"
+  },
+  {
+   "complexity": 6,
+   "loss": 3182.7,
+   "score": 0.11120626705724787,
+   "equation": "66092.64 / (R * sqrt(tau))"
+  },
+  {
+   "complexity": 8,
+   "loss": 2862.875,
+   "score": 0.05295176424217545,
+   "equation": "gap + (55774.758 / (R * sqrt(tau)))"
+  },
+  {
+   "complexity": 10,
+   "loss": 2707.991,
+   "score": 0.02780966655415468,
+   "equation": "14300.643 / ((sqrt(tau / gap) * R) + 10.259526)"
+  },
+  {
+   "complexity": 12,
+   "loss": 2702.11,
+   "score": 0.0010870411322162238,
+   "equation": "14300.643 / ((sqrt((tau + 0.17656325) / gap) * R) + 10.259526)"
+  },
+  {
+   "complexity": 13,
+   "loss": 2689.6184,
+   "score": 0.0046336244793198185,
+   "equation": "14419.845 / (((R * sqrt(tau / gap)) + 10.864648) - cos(tau))"
+  },
+  {
+   "complexity": 14,
+   "loss": 2627.5842,
+   "score": 0.023334455888478805,
+   "equation": "(tau + (17789.973 / ((R * sqrt(tau / gap)) + 15.177855))) + -43.446854"
+  },
+  {
+   "complexity": 16,
+   "loss": 2627.441,
+   "score": 2.7250107199396266e-05,
+   "equation": "((18201.463 / (15.677443 + (sqrt(tau / (-2.1086445 + gap)) * R))) + -41.971176) + tau"
+  },
+  {
+   "complexity": 17,
+   "loss": 2624.64,
+   "score": 0.0010666249304058944,
+   "equation": "((18075.55 / ((sqrt(tau / gap) * R) + (15.677443 - cos(tau)))) + -41.971176) + tau"
+  },
+  {
+   "complexity": 19,
+   "loss": 2616.9165,
+   "score": 0.0014735137529975674,
+   "equation": "((18075.55 / ((15.677443 - cos(tau)) + (sqrt(tau / gap) * R))) + (tau + -41.971176)) * 0.9932688"
+  },
+  {
+   "complexity": 25,
+   "loss": 2615.8186,
+   "score": 6.993793208388943e-05,
+   "equation": "(-41.971176 + tau) + ((18075.55 - sqrt(15.677443)) / (((sqrt(tau / gap) * R) + 15.677443) - cos(-83.94235 / sqrt(tau / gap))))"
+  },
+  {
+   "complexity": 29,
+   "loss": 2615.0366,
+   "score": 7.474877203882409e-05,
+   "equation": "tau + ((18075.55 / (((sqrt(tau / gap) * R) - cos((sqrt(tau / 0.2013129) * R) + ((0.1768185 - tau) - cos(R)))) + 15.677443)) + -41.971176)"
+  },
+  {
+   "complexity": 30,
+   "loss": 2614.7463,
+   "score": 0.00011101799284947954,
+   "equation": "(tau + ((18075.55 / (((sqrt(tau / gap) * R) + 15.677443) - cos(-83.94235 / (sqrt(tau) / (tau / (tau / sqrt(gap))))))) - sqrt(tau))) + -41.971176"
+  },
+  {
+   "complexity": 31,
+   "loss": 2609.203,
+   "score": 0.002122264885146852,
+   "equation": "(((tau * sqrt(sqrt(sqrt(gap) * tau))) * gap) / R) + (14414.221 / (sqrt(sqrt(R) * (R / tau)) + (sqrt(tau / gap) * (tau + R))))"
+  },
+  {
+   "complexity": 32,
+   "loss": 2592.9685,
+   "score": 0.00624145232512813,
+   "equation": "(tau * (gap * ((sqrt(tau / R) / R) * sqrt(gap)))) + (14414.221 / (sqrt((R * sqrt(gap)) / tau) + (sqrt(tau / gap) * (tau + R))))"
+  },
+  {
+   "complexity": 33,
+   "loss": 2581.1006,
+   "score": 0.004587461274193365,
+   "equation": "(((sqrt(sqrt(gap * tau)) * (gap - sqrt(R))) * tau) / R) + (14414.221 / (sqrt(sqrt(R) * (R / tau)) + (sqrt(tau / gap) * (tau + R))))"
+  }
+ ]
+}
