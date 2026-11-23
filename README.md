@@ -532,6 +532,27 @@ data for every method, run for run. BACON is the original at its code defaults.
   half the splits. It has not been run on the Feynman benchmark (Tests 15–17), where
   free powers could add wrong candidates.
 
+### Busy beaver growth census (exploratory; full write-up in `busy_beaver/README.md`)
+
+basin fitted to Turing machines. Each machine was simulated for 4.2M steps, and basin
+was given its tape width over time. The machines were all non-halting 3-state machines,
+20,000 sampled 4-state and 20,000 sampled 5-state non-halting machines, the 608 BB(6)
+holdouts and the known cryptids. This was not a pre-registered test.
+
+- **A few sharp growth classes, in nearly the same shares for 3 to 5 states:** about
+  83% linear, 13% bounded, 2–4% √t, 0.4% log, and a rare t^(1/3).
+- **The fitted constants are exact and identify each machine's mechanism:**
+  - rational speeds, with a parity rule;
+  - c² a simple fraction for bouncers;
+  - counters in exact algebraic bases. 15,054 of BB(5)'s 297,225 counters count in base
+    φ (Fibonacci counters). Others use the plastic number, tribonacci, Narayana and
+    silver-ratio bases, all Pisot numbers.
+- **The BB(5) champion's fitted `1.92·√t` follows from its Collatz-like rule.**
+  span/√t swings between 4/√5 and 2 once per 25/9 in time, averaging 1.9236.
+- **How badly basin fits detects hard machines but not halting.** Every BB(6) holdout
+  fits more roughly than 99% of ordinary machines. Halting and non-halting cryptids do
+  not differ.
+
 ## Files
 
 | file | what it is |
@@ -553,6 +574,7 @@ data for every method, run for run. BACON is the original at its code defaults.
 | `allen/run_allen.py`, `allen/results/` | Allen Cell Types runner, per-fit answers and `allen_scores.csv` |
 | `neuromorpho/run_neuromorpho.py`, `neuromorpho/run_wiring.py`, `neuromorpho/results*/` | NeuroMorpho runners (volume, wiring), per-fit answers and scores |
 | `data/allen/`, `data/neuromorpho/` | not in the repo (197 MB): the raw downloads (Allen API JSON, NeuroMorpho morphometry pages and merged CSV) |
+| `busy_beaver/` | the Turing machine growth census: write-up, simulators and enumerators (C), fitting and classification scripts, per-machine results, and `analyze.py`, which recomputes every number in the write-up |
 
 ## Per-law results, Test 15: basin / PySR
 

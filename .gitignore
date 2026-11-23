@@ -13,3 +13,22 @@ venv/
 
 # raw downloads (197 MB); see findings/README.md for the sources
 data/
+
+# busy_beaver: large intermediates and compiled binaries (regenerate with the scripts)
+busy_beaver/bbdata/
+busy_beaver/**/*.out
+busy_beaver/**/*.bin
+busy_beaver/**/*.int64
+busy_beaver/**/*.npy
+busy_beaver/**/*.jsonl
+!busy_beaver/results/*.jsonl
+busy_beaver/census/atlas.html
+busy_beaver/census/sim
+busy_beaver/small/enum
+busy_beaver/bb6/simtxt
+busy_beaver/bb6/rand6
+busy_beaver/halt/enum_halt
+busy_beaver/base/scan
+busy_beaver/base/incrbin
+busy_beaver/base/incr
+busy_beaver/champ/trace

@@ -1,0 +1,48 @@
+set,name,status,machine
+cryptid,Antihydra,probviously non-halting,1RB1RA_0LC1LE_1LD1LC_1LA0LB_1LF1RE_---0RA
+cryptid,Lucy's Moonlight,probviously halting,1RB0RD_0RC1RE_1RD0LA_1LE1LC_1RF0LD_---0RA
+cryptid,cryptid 3,probviously non-halting,1RB1RC_1LC1LE_1RA1RD_0RF0RE_1LA0LB_---1RA
+cryptid,cryptid 4,probviously non-halting,1RB1LD_1RC1RE_0LA1LB_0LD1LC_1RF0RA_---0RC
+cryptid,cryptid 5,probviously non-halting,1RB0LD_1RC1RF_1LA0RA_0LA0LE_1LD1LA_0RB---
+cryptid,cryptid 6,probviously non-halting,1RB0LB_1LC0RE_1LA1LD_0LC---_0RB0RF_1RE1RB
+cryptid,Space Needle,probviously non-halting,1RB1LA_1LC0RE_1LF1LD_0RB0LA_1RC1RE_---0LD
+cryptid,cryptid 8,probviously halting,1RB1RA_0RC1RC_1LD0LF_0LE1LE_1RA0LB_---0LC
+cryptid,cryptid 9,probviously halting,1RB1RE_1LC1LD_---1LA_1LB1LE_0RF0RA_1LD1RF
+cryptid,cryptid 10,probviously halting,1RB0RE_1LC1LD_0RA0LD_1LB0LA_1RF1RA_---1LB
+cryptid,cryptid 11,probviously halting,1RB0LC_0LC0RF_1RD1LC_0RA1LE_---0LD_1LF1LA
+cryptid,cryptid 12,probviously halting,1RB0LC_1LC0RD_1LF1LA_1LB1RE_1RB1LE_---0LE
+cryptid,cryptid 13,probviously halting,1RB---_0RC0RE_1RD1RF_1LE0LB_1RC0LD_1RC1RA
+cryptid,cryptid 14,probviously halting,1RB0LD_1RC1RA_1LD0RB_1LE1LA_1RF0RC_---1RE
+cryptid,cryptid 15,probviously decidable,1RB1LE_0LC0LB_1RD1LC_1RD1RA_1RF0LA_---1RE
+cryptid,cryptid 16,probviously non-halting,1RB0RB_1LC1RE_1LF0LD_1RA1LD_1RC1RB_---1LC
+cryptid,cryptid 17,probviously non-halting,1RB1LA_0LC0RC_1LE1RD_1RE1RC_1LF0LA_---1LE
+cryptid,cryptid 18,probviously halting,1RB1LD_1RC0LE_1LA1RE_0LF1LA_1RB0RB_---0LB
+cryptid,cryptid 19,probviously non-halting,1RB0RF_1RC1RF_1LD0LE_---1LC_1RA1LE_1LC1RB
+cryptid,cryptid 20,probviously halting,1RB0RE_1LC0RA_1LA1LD_1LC1LF_0LC0LB_1LE---
+potential,potential 1,unknown,1RB1RE_1LC0RA_0RD1LB_---1RC_1LF1RE_0LB0LE
+potential,potential 2,unknown,1RB0LD_1LC0RA_1RA1LB_1LA1LE_1RF0LC_---0RE
+potential,potential 3,unknown,1RB1RF_1LC1LF_0RE1LD_0LB1LD_---1RC_1RA0RD
+potential,potential 4,unknown,1RB1LA_1RC0RF_1RD---_0LE1RB_---0LA_1LD1RF
+potential,potential 5,unknown,1RB1RF_0LC0RF_1RD1LC_---0LE_0RC1LF_1RA0LE
+potential,potential 6,unknown,1RB0LD_0RC1RB_0RD0RA_1LE0RD_1LF---_0LA1LA
+champion6,BB(6) champion,halts after ~10↑↑10↑↑10↑↑8 steps,1RB1RA_1RC1RZ_1LD0RF_1RA0LE_0LD1RC_1RA0RE
+halter5,BB(5) halter #1,halts at step 47176870,1RB1LC_1RC1RB_1RD0LE_1LA1LD_1RZ0LA
+halter5,BB(5) halter #2,halts at step 23554764,1RB0LD_1LC1RD_1LA1LC_1RZ1RE_1RA0RB
+halter5,BB(5) halter #3,halts at step 11821234,1RB1RA_1LC1LB_1RA0LD_0RB1LE_1RZ0RB
+halter5,BB(5) halter #4,halts at step 11821220,1RB1RA_1LC1LB_1RA0LD_1RC1LE_1RZ0RB
+halter5,BB(5) halter #5,halts at step 11821190,1RB1RA_0LC0RC_1RZ1RD_1LE0LA_1LA1LE
+halter5,BB(5) halter #6,halts at step 11815076,1RB1RA_1LC0RD_1LA1LC_1RZ1RE_1LC0LA
+halter5,BB(5) halter #7,halts at step 11811040,1RB1RA_1LC1LB_1RA0LD_0RB1LE_1RZ1LC
+halter5,BB(5) halter #8,halts at step 11811040,1RB1RA_1LC1LB_0RC1LD_1RA0LE_1RZ1LC
+halter5,BB(5) halter #9,halts at step 11811026,1RB1RA_1LC1LB_1RA0LD_1RC1LE_1RZ1LC
+halter5,BB(5) halter #10,halts at step 11811010,1RB1RA_0LC0RC_1RZ1RD_1LE1RB_1LA1LE
+halter5,BB(5) halter #11,halts at step 11804940,1RB1RA_1LC1LB_1RA1LD_0RE0LE_1RZ1LC
+halter5,BB(5) halter #12,halts at step 11804926,1RB1RA_1LC1LB_1RA1LD_1RA0LE_1RZ1LC
+halter5,BB(5) halter #13,halts at step 11804910,1RB1RA_1LC0RD_1LA1LC_1RZ1RE_0LE1RB
+halter5,BB(5) halter #14,halts at step 11804896,1RB1RA_1LC0RD_1LA1LC_1RZ1RE_1LC1RB
+halter5,BB(5) halter #15,halts at step 11798826,1RB1RA_1LC1LB_1RA1LD_1RA1LE_1RZ0LC
+halter5,BB(5) halter #16,halts at step 11798796,1RB1RA_1LC1RD_1LA1LC_1RZ0RE_1LC1RB
+halter5,BB(5) halter #17,halts at step 11792724,1RB1RA_1LC1RD_1LA1LC_1RZ1RE_0LE0RB
+halter5,BB(5) halter #18,halts at step 11792696,1RB1RA_1LC1RD_1LA1LC_1RZ1RE_1LA0RB
+halter5,BB(5) halter #19,halts at step 11792682,1RB1RA_1LC1RD_1LA1LC_1RZ1RE_1RA0RB
+halter5,BB(5) halter #20,halts at step 2358064,1RB1RZ_1LC1RC_0RE0LD_1LC0LB_1RD1RA

@@ -1,0 +1,42 @@
+{
+ "bounded": {
+  "name": "Bounded: cyclers",
+  "color": "--c-bounded",
+  "steps": 240,
+  "text": "The machine settles into a loop inside a fixed stretch of tape and repeats it forever. Most use 3 to 6 cells. In the 5-state database every one of them is in the time-limit group, since a bounded machine can never reach 12,289 cells."
+ },
+ "log": {
+  "name": "Logarithmic: counters",
+  "color": "--c-log",
+  "steps": 30000,
+  "text": "The tape grows by a fixed number of cells each time t doubles. That is how a binary counter behaves: it needs a new digit only when the count doubles. basin cannot write log, so these were fitted against u = log₂ t, where the law becomes a straight line. Most add exactly 1, 2 or 3 cells per doubling."
+ },
+ "third": {
+  "name": "Cube root: t^(1/3)",
+  "color": "--c-third",
+  "steps": 400000,
+  "text": "The span grows like the cube root of time. This class is rare: 4 machines in each of the 4- and 5-state samples, and none among 3-state machines. The coefficients are cube roots of small integers: three 4-state machines have c ≈ 1.442, the cube root of 3, and two 5-state machines have c ≈ 2.289, the cube root of 12. One of the 4-state machines, 1RB0RB_0LC1RB_1RA1LC, only uses 3 states. It defines all 6 of their transitions, so the 3-state tree, which always leaves one transition free to halt, never produces it."
+ },
+ "half": {
+  "name": "Square root: bouncers",
+  "color": "--c-half",
+  "steps": 60000,
+  "text": "The head sweeps back and forth across the used region and extends it by a fixed amount a on each sweep. Each sweep costs time in proportion to the current width, so t grows like span² and span ≈ c·√t, with c² = 2·a·v for a sweep speed v. Both are usually simple ratios, and it shows: for 60% of these machines c² lies within 0.2% of a fraction with denominator at most 6, against 12% for random values over the same range."
+ },
+ "one": {
+  "name": "Linear: translated cyclers",
+  "color": "--c-one",
+  "steps": 2400,
+  "text": "A fixed pattern repeats while drifting along the tape, so the span grows at a constant speed: d cells every p steps. The speeds come out as small fractions. 1/3, 1, 1/5, 1/7, 1/4 and 1/2 are the most common. Almost every 5-state machine that hit the space limit is in this class."
+ },
+ "other": {
+  "name": "No simple law",
+  "color": "--c-other",
+  "steps": 400000,
+  "text": "One sampled machine fits none of the classes. Its span multiplies by the same cycle of factors (×1.97, ×1.46, ×1.42, ×1.42) every time t grows 32-fold, which averages out to about t^0.51. It is √t growth with a wobble that repeats on a log scale. basin has no term for that and returned a 5-coefficient rational instead."
+ },
+ "rough": {
+  "steps": 200000,
+  "text": "Most √t machines fit c·√t almost exactly: the median cross-validated error is {median}. The BB(5) champion, fitted over the same window (steps 4,096 to 4.2 million), comes out at 1.92·√t with an error of 1.5e-3, because its sweeps follow a Collatz-like rule instead of a fixed schedule. Only {rank} of the {n} non-halting √t machines in the sample are as rough, and they are shown here. This is a lead to follow up, not a halting test: nothing in the champion's fit points to step 47,176,870, where it halts."
+ }
+}

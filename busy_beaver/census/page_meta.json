@@ -1,0 +1,25 @@
+{
+ "lede": "Every 5-state machine in bbchallenge's seed database runs forever, which was proven in 2024. This atlas samples 20,000 of them, along with every non-halting 3-state machine and 20,000 non-halting 4-state machines. Each one ran for 4.2 million steps, and basin was asked for a law describing how wide its used tape becomes. The answers fall into a few sharp classes, in nearly the same proportions at every machine size.",
+ "stats": [
+  {
+   "v": "42,678",
+   "k": "machines simulated"
+  },
+  {
+   "v": "4,194,304",
+   "k": "steps each"
+  },
+  {
+   "v": "0",
+   "k": "halted, as proven"
+  }
+ ],
+ "method": [
+  "5-state machines: a uniform sample of 20,000 from bbchallenge's seed database of 88,664,064 machines. These are the machines that neither halted within 47,176,870 steps nor stayed under 12,289 cells long enough to be ruled out, and all of them are now proven never to halt.",
+  "3- and 4-state machines were enumerated in the same tree normal form (first transition 1RB, new states introduced in order). A machine still running after S(n)+1 steps (22 and 108) can never reach an undefined transition, so it never halts. As a check, the longest halting leaves of the two trees run exactly 21 and 107 steps. Like bbchallenge's tree, this never produces a machine with every transition defined, so a 3-state machine with all 6 transitions set only appears in the 4-state tree, with a spare state.",
+  "Counts are per machine record, as in the bbchallenge database. Records that differ only in transitions the machine never uses are counted separately.",
+  "Measurement: the tape span, the number of cells between the leftmost and rightmost cells visited, at 41 checkpoints spaced evenly in log t from 2^12 to 2^22 steps.",
+  "Fits: basin 0.1.1 fits span against t and against log₂ t. The fit with the lower cross-validated error is kept. When the two errors are within a factor of 2, the law with fewer coefficients is kept instead. A log law is only allowed when the span grew slower than t^0.4 between steps 2^20 and 2^22. The class is the growth exponent of the chosen law at t = 2^22, rounded to 0, 1/3, 1/2 or 1 when it is within 0.04 of one.",
+  "Limits: every class describes the 4.2-million-step window and nothing beyond it. The BB(5) champion looks like a clean √t machine in this window and halts at step 47,176,870."
+ ]
+}
