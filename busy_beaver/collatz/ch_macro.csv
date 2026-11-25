@@ -1,0 +1,2 @@
+name,machine,key,status,nshapes,slope,frac,kind,mod,offsets,shape,coord,nblocks,ntrans,nmin,nmax,seq,seq_all,range,cls
+champion5,1RB1LC_1RC1RB_1RD0LE_1LA1LD_---0LA,DL,ok,59,1.6666415789416267,5/3,residue,3,0:14 1:46/3,(1)^n 0010011,0,1,11,22,12272,322 552 934 1572 2634 4404 7354 12272,4 22 52 102 184 322 552 934 1572 2634 4404 7354 12272,6.3240330702487215,residue x5/3

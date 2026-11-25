@@ -1,0 +1,119 @@
+== Growth classes (window t = 2^12 .. 2^22) ==
+  BB3 all    n=  2678  1: 84.17%  0: 13.48%  1/2: 1.98%  log: 0.37%
+  BB4 all    n= 20000  1: 83.18%  0: 13.41%  1/2: 3.01%  log: 0.38%  1/3: 0.02%
+  BB5 space  n= 16741  1: 99.33%  1/2: 0.66%  other: 0.01%
+  BB5 time   n=  3259  0: 78.37%  1/2: 19.58%  log: 1.93%  1/3: 0.12%
+
+== Linear machines: speed of the growing edge (BB(5) sample) ==
+  most common: [('1/3', 2758), ('1', 2665), ('1/5', 2064), ('irregular', 1802), ('1/7', 1266), ('1/4', 965), ('1/2', 856), ('1/9', 847), ('1/11', 583), ('1/6', 564), ('3/11', 527), ('3/7', 384), ('2/5', 250), ('3/5', 236)]
+  speeds a/b with a+b even (period can be b): 11465;  a+b odd (period must be 2b): 3362
+
+== sqrt(t) machines: is c^2 a simple fraction? (BB(5) sample) ==
+  denominator <= 12, within 0.4%:  machines  90.8%   random  53.5%
+  denominator <=  6, within 0.2%:  machines  60.5%   random  11.5%
+  denominator <=  4, within 0.1%:  machines  28.3%   random   2.9%
+  most common c^2: [('2', 102), ('1', 72), ('4/3', 48), ('4', 43), ('3/2', 28), ('8/3', 25), ('2/3', 23), ('3', 23), ('4/5', 17), ('9/4', 13)]
+  BB4 t^(1/3) machines: 1RB---_0RC0LD_1LB1RC_0RC1LD c^3=3.06, 1RB---_0LC0RC_0LD1RC_1RB1LD c^3=3.06, 1RB0RB_0LC1RB_1RA1LC_------ c^3=6.11, 1RB---_0LC0RD_1RB1LC_0LC1RD c^3=3.02
+  BB5 t^(1/3) machines: 1RB1RA_0LB1RC_1LD0RB_1RE1LC_---1RA c^3=23.82, 1RB1LA_1RC1RD_1LA0RE_---1LC_0LD1RE c^3=2.94, 1RB1LA_1LA1RC_0RD0LB_0LA1RE_---1RD c^3=11.91, 1RB1LA_1LC0RD_0LA1RA_0LE1RD_---0RB c^3=11.91
+
+== Counter bases: all 297,225 counter candidates in the BB(5) time-limit block ==
+  sqrt2                 140,307 records   47.21%    31,636 distinct growth sequences
+  2                      81,492 records   27.42%    11,011 distinct growth sequences
+  2^(1/3)                31,439 records   10.58%    12,770 distinct growth sequences
+  phi                    15,054 records    5.06%     4,235 distinct growth sequences
+  unidentified            9,381 records    3.16%     6,333 distinct growth sequences
+  2^(1/4)                 6,880 records    2.31%     3,883 distinct growth sequences
+  sqrt3                   5,631 records    1.89%     2,024 distinct growth sequences
+  2^(2/3)                 3,102 records    1.04%     1,332 distinct growth sequences
+  3^(1/3)                 1,623 records    0.55%       851 distinct growth sequences
+  sqrt(phi)                 614 records    0.21%       388 distinct growth sequences
+  narayana                  476 records    0.16%       309 distinct growth sequences
+  plastic                   338 records    0.11%       209 distinct growth sequences
+  sqrt(1+sqrt2)             302 records    0.10%       192 distinct growth sequences
+  plastic^2                 184 records    0.06%       134 distinct growth sequences
+  2^(1/6)                   138 records    0.05%       120 distinct growth sequences
+  3^(1/4)                   124 records    0.04%        82 distinct growth sequences
+  tribonacci                101 records    0.03%        53 distinct growth sequences
+  phi^(1/3)                  27 records    0.01%        23 distinct growth sequences
+  2^(1/5)                    12 records    0.00%        10 distinct growth sequences
+  cluster at phi            = 1.618034: 15,195 records, median relative error 7.2e-05
+  cluster at plastic        = 1.324718:    350 records, median relative error 2.1e-04
+  cluster at plastic^2      = 1.754878:    184 records, median relative error 1.2e-05
+  cluster at tribonacci     = 1.839287:    101 records, median relative error 1.9e-05
+  cluster at narayana       = 1.465571:    490 records, median relative error 2.4e-05
+  cluster at sqrt(1+sqrt2)  = 1.553774:    302 records, median relative error 3.2e-05
+  largest unidentified clusters: [(np.float64(1.361), 4646), (np.float64(1.415), 604), (np.float64(1.139), 411), (np.float64(1.416), 304), (np.float64(1.413), 289), (np.float64(1.848), 189)]
+
+== BB(5) champion: span/sqrt(t) from its Collatz-like rule vs simulation ==
+  all 14 configurations have the form 0^inf <A 1^n 0^inf: True
+  predicted at configurations 4/sqrt(5) = 1.7889; measured: [1.7913, 1.7906, 1.7897, 1.7893, 1.7891, 1.7891]
+  cycle x2.803: min 1.7903, peak 2.0032 at 25% (log t)
+  cycle x2.792: min 1.7899, peak 2.0016 at 21% (log t)
+  cycle x2.786: min 1.7893, peak 2.0006 at 22% (log t)
+  cycle x2.782: min 1.7888, peak 2.0003 at 22% (log t)
+  model: min 1.7889 (4/sqrt5), max 2.0000 (2), mean over log t 1.9236; basin fit c = 1.920
+
+== BB(6): roughness (cross-validated error) within growth class ==
+  random6  n=5000: 1 86.9%, 0 11.9%, 1/2 1.0%, log 0.2%
+  holdout  n=608: other 37.2%, 1/2 32.4%, log 16.9%, 1/3 8.6%, 0 3.1%, 2/3 1.5%, 1 0.3%
+  holdouts rougher than the random 6-state 99th percentile: 100%  (AUC 1.000)
+  holdouts rougher than the BB(5) census 99th percentile: 100%  (AUC 0.999)
+  machine            status                     class        cv  pct-in-holdouts pct-in-random6 pct-in-BB(5)
+  BB(6) champion     halts after ~10↑↑10↑↑10↑↑8 other  5.0e-03    52.7           nan           nan
+  Antihydra          probviously non-halting    1/2    9.3e-04    35.5         100.0          98.7
+  Lucy's Moonlight   probviously halting        1/2    2.9e-03    67.5         100.0          99.6
+  cryptid 3          probviously non-halting    1/2    8.5e-04    31.5         100.0          98.7
+  cryptid 4          probviously non-halting    1/2    8.2e-04    26.4         100.0          98.5
+  cryptid 5          probviously non-halting    other  2.0e-02    92.5           nan           nan
+  cryptid 6          probviously non-halting    1/2    7.1e-04    20.8         100.0          98.5
+  Space Needle       probviously non-halting    other  5.5e-03    55.3           nan           nan
+  cryptid 8          probviously halting        other  1.2e-02    78.3           nan           nan
+  cryptid 9          probviously halting        other  5.7e-03    57.1           nan           nan
+  cryptid 10         probviously halting        other  1.3e-02    79.6           nan           nan
+  cryptid 11         probviously halting        other  5.6e-03    56.6           nan           nan
+  cryptid 12         probviously halting        other  1.5e-02    86.3           nan           nan
+  cryptid 13         probviously halting        1/2    3.7e-03    75.1         100.0         100.0
+  cryptid 14         probviously halting        1/2    7.6e-04    23.4         100.0          98.5
+  cryptid 15         probviously decidable      1/2    8.0e-04    25.4         100.0          98.5
+  cryptid 16         probviously non-halting    other  5.9e-03    58.0           nan           nan
+  cryptid 17         probviously non-halting    other  2.7e-02    97.8           nan           nan
+  cryptid 18         probviously halting        other  4.4e-03    48.2           nan           nan
+  cryptid 19         probviously non-halting    1/2    4.5e-03    77.7         100.0         100.0
+  cryptid 20         probviously halting        1/2    4.2e-03    77.2         100.0         100.0
+  BB(5) halter #1    halts at step 47176870     1/2    1.5e-03    47.2         100.0          98.8
+  BB(5) halter #2    halts at step 23554764     1/2    1.7e-03    50.3         100.0          98.8
+  BB(5) halter #3    halts at step 11821234     1/2    1.3e-03    45.7         100.0          98.7
+  BB(5) halter #4    halts at step 11821220     1/2    1.3e-03    45.7         100.0          98.7
+  BB(5) halter #5    halts at step 11821190     1/2    1.3e-03    45.7         100.0          98.7
+  BB(5) halter #6    halts at step 11815076     1/2    1.3e-03    45.7         100.0          98.7
+  BB(5) halter #7    halts at step 11811040     1/2    1.3e-03    45.7         100.0          98.7
+  BB(5) halter #8    halts at step 11811040     1/2    1.3e-03    45.7         100.0          98.7
+  BB(5) halter #9    halts at step 11811026     1/2    1.3e-03    45.7         100.0          98.7
+  BB(5) halter #10   halts at step 11811010     1/2    1.3e-03    46.2         100.0          98.7
+  BB(5) halter #11   halts at step 11804940     1/2    1.3e-03    46.2         100.0          98.7
+  BB(5) halter #12   halts at step 11804926     1/2    1.3e-03    46.2         100.0          98.7
+  BB(5) halter #13   halts at step 11804910     1/2    1.3e-03    46.2         100.0          98.7
+  BB(5) halter #14   halts at step 11804896     1/2    1.3e-03    46.2         100.0          98.7
+  BB(5) halter #15   halts at step 11798826     1/2    1.4e-03    46.2         100.0          98.8
+  BB(5) halter #16   halts at step 11798796     1/2    1.4e-03    46.2         100.0          98.8
+  BB(5) halter #17   halts at step 11792724     1/2    1.5e-03    47.2         100.0          98.8
+  BB(5) halter #18   halts at step 11792696     1/2    1.5e-03    47.2         100.0          98.8
+  BB(5) halter #19   halts at step 11792682     1/2    1.5e-03    47.2         100.0          98.8
+  BB(5) halter #20   halts at step 2358064      other  1.5e-03    20.4           nan           nan
+  potential 1        unknown                    1/2    1.5e-03    47.7         100.0          98.8
+  potential 2        unknown                    1/2    7.8e-03    90.4         100.0         100.0
+  potential 3        unknown                    1/3    8.3e-04    28.8           nan           nan
+  potential 4        unknown                    other  1.2e-03    14.6           nan           nan
+  potential 5        unknown                    log    3.3e-04     9.7           nan          39.7
+  potential 6        unknown                    other  4.7e-04     4.9           nan           nan
+  halting cryptids median 71 (n=10), non-halting median 55 (n=9), Mann-Whitney p = 0.49
+  holdouts in class 1/2: 197, with a clean law 147 (75%)
+  holdouts in class 1/3: 52, with a clean law 23 (44%)
+  holdouts in class log: 103, with a clean law 16 (16%)
+
+Traceback (most recent call last):
+  File "/home/purge/Desktop/hybrid/busy_beaver/analyze.py", line 169, in <module>
+    SECTIONS[name](); print()
+  File "/home/purge/Desktop/hybrid/busy_beaver/analyze.py", line 141, in halters
+    import sympy as sp
+ModuleNotFoundError: No module named 'sympy'

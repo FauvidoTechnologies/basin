@@ -32,3 +32,18 @@ busy_beaver/base/scan
 busy_beaver/base/incrbin
 busy_beaver/base/incr
 busy_beaver/champ/trace
+busy_beaver/report/preview/
+busy_beaver/report/*.aux
+busy_beaver/report/*.log
+busy_beaver/report/*.toc
+busy_beaver/report/*.pdf
+busy_beaver/pisot/incrlong
+busy_beaver/wobble/spandense
+busy_beaver/wobble/chunk_*
+busy_beaver/screen/screen
+busy_beaver/collatz/macroc
+# large screen intermediates; canonical copies are in busy_beaver/results/
+busy_beaver/screen/all_scores.csv
+busy_beaver/screen/all_scaleinv.csv
+busy_beaver/screen/sampleA_scores.csv
+busy_beaver/screen/sampleA_labels.csv

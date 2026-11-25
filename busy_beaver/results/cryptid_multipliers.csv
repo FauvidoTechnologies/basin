@@ -1,0 +1,21 @@
+name,machine,status,multiplier,evidence,detail
+Antihydra,1RB1RA_0LC1LE_1LD1LC_1LA0LB_1LF1RE_---0RA,probviously non-halting,3/2,published rule; wobble period; teeth; macro configurations,1^a 0 1^b: b odd -> (3b+3)/2 with a-1; b even -> 3b/2+2 with a+2
+Lucy's Moonlight,1RB0RD_0RC1RE_1RD0LA_1LE1LC_1RF0LD_---0RA,probviously halting,8/3,published rule; teeth,C(a+1;3k) -> C(a;8k+6) etc.; reset branch b -> 8
+cryptid 3,1RB1RC_1LC1LE_1RA1RD_0RF0RE_1LA0LB_---1RA,probviously non-halting,3/2,wobble period; teeth,
+cryptid 4,1RB1LD_1RC1RE_0LA1LB_0LD1LC_1RF0RA_---0RC,probviously non-halting,4/3,wobble; teeth; macro configurations,(10)^x (110)^y 11: x -> (4x+5)/3 or (4x+4)/3 by x mod 3; y+1 per step
+cryptid 5,1RB0LD_1RC1RF_1LA0RA_0LA0LE_1LD1LA_0RB---,probviously non-halting,4/3,teeth; macro configurations,main block 2090 -> 2791 -> 3723 -> 4970; side variable +4/+6/-1
+cryptid 6,1RB0LB_1LC0RE_1LA1LD_0LC---_0RB0RF_1RE1RB,probviously non-halting,4/3,wobble; teeth; macro configurations,main block 2443 -> 3259 -> 4347 -> 5802; side variable +4/-1
+Space Needle,1RB1LA_1LC0RE_1LF1LD_0RB0LA_1RC1RE_---0LD,probviously non-halting,two-block x2 exchange,macro configurations,1^a 0 1^b 0 1^c: a -> 0 while b gains 2a; no single multiplier; span ~ t^0.35
+cryptid 8,1RB1RA_0RC1RC_1LD0LF_0LE1LE_1RA0LB_---0LC,probviously halting,3/2,teeth; macro configurations,one block +6 per -4 of another
+cryptid 9,1RB1RE_1LC1LD_---1LA_1LB1LE_0RF0RA_1LD1RF,probviously halting,3/2,teeth; macro configurations,(01)^n: 1840 -> 2765; side variable 252 -> 248 -> 245
+cryptid 10,1RB0RE_1LC1LD_0RA0LD_1LB0LA_1RF1RA_---1LB,probviously halting,3/2,teeth; macro configurations,1^n: 2833 -> 4255 -> 6388; side variable 165 -> 163 -> 161
+cryptid 11,1RB0LC_0LC0RF_1RD1LC_0RA1LE_---0LD_1LF1LA,probviously halting,3/2,teeth; macro configurations,1300 -> 1954 -> 2935 -> 4408; side counter 6 -> 5 -> 4 -> 3 then shape change
+cryptid 12,1RB0LC_1LC0RD_1LF1LA_1LB1RE_1RB1LE_---0LE,probviously halting,3/2,teeth; macro configurations,811 -> 1222 -> 1840 -> 2764; side variable 41 -> 39 -> 37 -> 35 -> 33
+cryptid 13,1RB---_0RC0RE_1RD1RF_1LE0LB_1RC0LD_1RC1RA,probviously halting,8/3,wobble; teeth; macro configurations (within step),1^a 0 1^b (01)^c: b -3 per c +4; (01) units are 2 cells
+cryptid 14,1RB0LD_1RC1RA_1LD0RB_1LE1LA_1RF0RC_---1RE,probviously halting,3/2,wobble; teeth,
+cryptid 15,1RB1LE_0LC0LB_1RD1LC_1RD1RA_1RF0LA_---1RE,probviously decidable,3/2,teeth; macro configurations,(0)^n (10)^m: n +6 per m -2
+cryptid 16,1RB0RB_1LC1RE_1LF0LD_1RA1LD_1RC1RB_---1LC,probviously non-halting,3/2 and 5/4 by parity,macro configurations,1^n: odd n -> (3n+3)/2; n = 0 mod 4 -> (5n+8)/4
+cryptid 17,1RB1LA_0LC0RC_1LE1RD_1RE1RC_1LF0LA_---1LE,probviously non-halting,3/2 and 9/8,macro configurations,boundaries 1367 -> 1540 -> 2312 -> 3470
+cryptid 18,1RB1LD_1RC0LE_1LA1RE_0LF1LA_1RB0RB_---0LB,probviously halting,undetermined,one macro step in window,
+cryptid 19,1RB0RF_1RC1RF_1LD0LE_---1LC_1RA1LE_1LC1RB,probviously non-halting,3/2 and 5/4 (and 9/8?) by residue,macro configurations,1^n: even -> (3n+4)/2; n = 1 mod 4 -> (5n+11)/4; 71 -> 80
+cryptid 20,1RB0RE_1LC0RA_1LA1LD_1LC1LF_0LC0LB_1LE---,probviously halting,8/3,wobble; teeth; macro configurations (within step),1^a (01)^b 1^c: b +4 per c -3

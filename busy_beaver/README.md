@@ -28,7 +28,8 @@ cleanly and halts at step 47,176,870 (see [the champion](#the-bb5-champion-c-der
    - **Counters** count in exact algebraic bases. Of the 297,225 counters in the BB(5)
      database, 15,054 count in **base φ (Fibonacci / Zeckendorf counters)**. Others count
      in the plastic number, its square, the tribonacci constant, Narayana's cows constant
-     and the silver ratio. All of these are **Pisot numbers**.
+     and the silver ratio. All of these are **Pisot numbers** (but see
+     [base 3/2](#what-we-learnt-next) below).
 3. **The BB(5) champion's constant follows from its Collatz-like rule.** span/√t swings
    between exactly 4/√5 and 2 once per factor of 25/9 in time. The average, 1.9236,
    matches basin's 1.920.
@@ -36,6 +37,49 @@ cleanly and halts at step 47,176,870 (see [the champion](#the-bb5-champion-c-der
    holdout fits more roughly than 99% of ordinary machines (AUC 1.000). Within the
    holdouts, the cryptids are not special, and probviously-halting cryptids look like
    probviously non-halting ones (p = 0.49).
+
+## What we learnt next
+
+Follow-up work on 24–25 November, starting from where basin fitted badly. This section
+is the short version. Methods, numbers and figures are in the report,
+[`report/busy_beaver_report.tex`](report/busy_beaver_report.tex). The code is in
+`pisot/`, `wobble/`, `collatz/` and `screen/`.
+
+1. **Small machines count in base 3/2, so "Pisot bases only" is wrong.** Reading the
+   counter's value straight off the tape shows 67 distinct BB(5) behaviours counting in
+   the rational base 3/2. One uses exactly the digit system of Akiyama, Frougny and
+   Sakarovitch. A rational base is as easy for a small machine as binary, because a carry
+   only travels a bounded distance.
+2. **basin's bad fits are a Collatz detector.** The champion's roughness is a wobble that
+   repeats on a log scale of time, because each macro step multiplies its size. Any
+   machine whose rule multiplies shows the same wobble:
+   - Its period gives the multiplier without knowing the rule. Antihydra's 3/2 was
+     predicted from its rule first, then measured: a period factor of 2.251 against the
+     predicted 2.25.
+   - Unlike a bouncer's wobble, it never fades as the machine grows. That one number
+     splits BB(5)'s √t machines cleanly: 98.7% fade, 1.26% don't, and almost none fall in
+     between.
+   - In the BB(5) census, the six worst basin fits out of 638 √t machines are exactly the
+     six whose wobble doesn't fade.
+3. **The tape separates counters from Collatz maps.**
+   - **Integer multiplier:** an exponential counter, applying one formula forever, such as
+     n → 2n + 6.
+   - **Fractional multiplier:** it forces a different formula for each residue of n, and a
+     growing number can never settle into a repeating pattern of cases. That is what makes
+     a rule Collatz-like.
+
+   Every machine checked fits this split.
+4. **BB(5) is full of cryptid-like rules.**
+   - Across all 2.77 million √t-like BB(5) records, about 2,200 distinct behaviours follow
+     Collatz-like rules. Their multipliers are 3/2, 4/3, 5/2, 5/4, 5/3, 7/4 and 8/3, which
+     include the BB(5) champion's and every BB(6) cryptid's except 9/8.
+   - All of them are proven non-halting, almost all by simple methods that never look at
+     the dynamics, because no branch of their rule reaches the halt state.
+   - **So a cryptid is set apart not by its dynamics but by its wiring:** a Collatz-like
+     rule with one branch that leads to halting.
+5. **The hardest BB(5) machine isn't Collatz-like.** Skelet 17, one of the last BB(5)
+   holdouts, is a Gray-code counter with no multiplicative rule. Being hard to prove and
+   being Collatz-like are separate questions.
 
 ---
 
